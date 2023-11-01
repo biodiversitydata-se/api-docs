@@ -6,7 +6,12 @@
   <meta name="description" content="SBDI API Documentation" />
   <title>API Documentation</title>
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
-  <link href="https://static.biodiversitydata.se/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>  
+  <link href="https://static.biodiversitydata.se/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
+  <style>
+    .swagger-ui .topbar {
+        background: #6691a4;
+    }
+  </style>
 </head>
 <body>
   <div id="swagger-ui"></div>
@@ -14,6 +19,7 @@
   <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js" crossorigin></script>
   <script>
     window.onload = () => {
+
       window.ui = SwaggerUIBundle({
         urls: [
           { name: 'Records', url:'specs/records' },
@@ -29,12 +35,17 @@
         ],
         dom_id: '#swagger-ui',
         deepLinking: true,
+        validatorUrl: null,
         presets: [
           SwaggerUIBundle.presets.apis,
           SwaggerUIStandalonePreset,
         ],
         layout: "StandaloneLayout",
       });
+
+      const topbarLink = document.getElementsByClassName('link');
+      topbarLink[0].href = "/";
+      topbarLink[0].innerHTML = "Swedish Biodiversity Data Infrastructure";
     };
   </script>
 </body>
