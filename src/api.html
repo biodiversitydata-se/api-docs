@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="SBDI API Documentation" />
+  <title>API Documentation</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+  <link href="https://static.biodiversitydata.se/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>  
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js" crossorigin></script>
+  <script>
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        urls: [
+          { name: 'Records', url:'specs/records' },
+          { name: 'Spatial', url:'specs/spatial' },
+          { name: 'Species', url:'specs/species' },
+          { name: 'Lists', url:'specs/lists' },
+          { name: 'Collections', url:'specs/collections' },
+          { name: 'Images', url:'specs/images' },
+          { name: 'Logger', url:'specs/logger' },
+          { name: 'Userdetails', url:'specs/userdetails' },
+          { name: 'SDS', url:'specs/sds' },
+          { name: 'Namematching', url:'specs/namematching' },
+        ],
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset,
+        ],
+        layout: "StandaloneLayout",
+      });
+    };
+  </script>
+</body>
+</html>
