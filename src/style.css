@@ -48,21 +48,10 @@ a:active,a:hover {
     outline: 0
 }
 
-ol,ul {
-    margin: 0 0 1.618em 2.617924em;
-    padding: 0
+dt {
+    font-weight: 500;
 }
 
-ul {
-    list-style: disc
+dd {
+    margin-bottom: 0.7em;
 }
-
-ol {
-    list-style: decimal
-}
-
-li>ol,li>ul {
-    margin-bottom: 0;
-    margin-left: 2.617924em
-}
-
