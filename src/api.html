@@ -3,13 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="SBDI API Documentation" />
-  <title>API Documentation</title>
+  <meta name="description" content="Swedish Biodiversity Data Infrastructure web service API documentation" />
+  <title>Web service API</title>
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
   <link href="https://static.biodiversitydata.se/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
   <style>
     .swagger-ui .topbar {
         background: #6691a4;
+    }
+    .swagger-ui .topbar a {
+        font-size: 1.0em;
     }
   </style>
 </head>
@@ -45,7 +48,10 @@
 
       const topbarLink = document.getElementsByClassName('link');
       topbarLink[0].href = "/";
-      topbarLink[0].innerHTML = "Swedish Biodiversity Data Infrastructure";
+      topbarLink[0].innerHTML = 
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" viewBox="0 0 320 512" style="padding-right: 8px">' + 
+          '<path d="M224 480c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25l192-192c12.512.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l169.4 169.4c12.5 12.5 12.5 32.75 0 45.25C240.4 476.9 232.2 480 224 480z" stroke="white" fill="white"></path>' + 
+        '</svg>Swedish Biodiversity Data Infrastructure';
     };
   </script>
 </body>
