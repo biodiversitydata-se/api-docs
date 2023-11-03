@@ -16,13 +16,11 @@ h1 {
     font-weight: 500;
     font-size: 2.4rem;
 }
-
 @media screen and (max-width: 1024px) {
     h1 {
         font-size:2.1rem
     }
 }
-
 @media screen and (max-width: 568px) {
     h1 {
         font-size:1.8rem
@@ -47,10 +45,14 @@ dd {
 }
 
 .content {
+    width: 100%;
+    max-width: 1152px;
     margin-left: auto;
     margin-right: auto;
-    width: 100%;
-    max-width: 1280px;
+}
+.content-margin {
+    margin-left: 0.7rem;
+    margin-right: 0.7rem;
 }
 
 header .banner {
@@ -58,19 +60,16 @@ header .banner {
     margin-top: 0.7rem;
     margin-bottom: 0.7rem;
 }
-
 header .banner img {
     margin-right: 1.0rem;
     max-width: 120px;
 }
-
 header .banner div {
     align-self: flex-end;
     font-weight: 400;
     font-size: 1.2rem;
     color: #686868;
 }
-
 header .topbar {
     height: 2.5rem;
     background-color: #6691a4;
@@ -80,9 +79,8 @@ footer {
     height: 5rem;
     margin-top: 2.0rem;
     background-color: #004767;
-}
-
-footer div {
-    padding-top: 1.8rem;
     color: #ffffff;
+}
+footer .copyright {
+    padding-top: 1.8rem;
 }
