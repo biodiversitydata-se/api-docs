@@ -11,25 +11,21 @@ body {
     font-size: 1rem;
 }
 
-h1,h2,h3,h4,h5,h6 {
-    font-family: Roboto;
-    font-weight: 500
-}
-
 h1 {
-    font-size: 2.42em;
-    line-height: 1.216
+    font-family: Roboto;
+    font-weight: 500;
+    font-size: 2.4rem;
 }
 
 @media screen and (max-width: 1024px) {
     h1 {
-        font-size:2.1em
+        font-size:2.1rem
     }
 }
 
 @media screen and (max-width: 568px) {
     h1 {
-        font-size:1.8em
+        font-size:1.8rem
     }
 }
 
@@ -37,17 +33,56 @@ a {
     color: #1e4b75;
     text-decoration: none;
 }
-
 a:hover {
     text-decoration: underline;
 }
 
 dt {
     font-weight: 500;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.5rem;
+}
+dd {
+    margin-bottom: 0.7rem;
+    margin-left: 1.2rem;
 }
 
-dd {
-    margin-bottom: 0.7em;
-    margin-left: 1.2em;
+.content {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1280px;
+}
+
+header .banner {
+    display: flex;
+    margin-top: 0.7rem;
+    margin-bottom: 0.7rem;
+}
+
+header .banner img {
+    margin-right: 1.0rem;
+    max-width: 120px;
+}
+
+header .banner div {
+    align-self: flex-end;
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: #686868;
+}
+
+header .topbar {
+    height: 2.5rem;
+    background-color: #6691a4;
+}
+
+footer {
+    height: 5rem;
+    margin-top: 2.0rem;
+    background-color: #004767;
+}
+
+footer div {
+    padding-top: 1.8rem;
+    color: #ffffff;
 }
