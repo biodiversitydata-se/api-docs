@@ -1,0 +1,840 @@
+openapi: 3.0.1
+info:
+  title: Collectory REST services
+  description: REST services for interacting with the collectory webapp
+  termsOfService: https://docs.biodiversitydata.se/sbdi-data/sbdi-atlas-terms-of-use/
+  contact:
+    name: ""
+    email: ""
+  license:
+    name: Mozilla Public License 1.1
+    url: https://www.mozilla.org/en-US/MPL/1.1/
+  version: 4.0.0
+servers:
+- url: https://collections.biodiversitydata.se
+paths:
+  /ws/contacts/{id}:
+    get:
+      tags:
+      - contacts
+      summary: Get a contact
+      description: Get an existing contact with the specified contact id
+      operationId: contacts
+      parameters:
+      - name: id
+        in: path
+        description: contact identifier value
+        required: true
+        schema:
+          type: string
+        example: 31
+      responses:
+        "200":
+          description: Contact info
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactModelResponse'
+            text/csv:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ContactModelResponse'
+      security:
+      - openIdConnect: []
+    post:
+      tags:
+      - contacts
+      summary: Update an existing contact
+      description: Update an existing contact with the specified contact id
+      operationId: updateContact
+      parameters:
+      - name: id
+        in: path
+        description: contact identifier value
+        required: true
+        schema:
+          type: string
+        example: 31
+      requestBody:
+        description: A JSON object containing the contact details to be updated
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "200":
+          description: Updated status of the contact with new contact info
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactModelResponse'
+      security:
+      - openIdConnect: []
+  /ws/eml/{id}:
+    get:
+      tags:
+      - field
+      summary: Get a field by Id
+      description: Get a field by Id. Includes all objects associated with the field.
+      operationId: getFieldById
+      parameters:
+      - name: id
+        in: path
+        description: Id of the field
+        required: true
+        schema:
+          type: string
+        example: dr368
+      - name: start
+        in: query
+        description: starting index for associated objects
+        schema:
+          type: integer
+          format: int64
+        example: 0
+      - name: pageSize
+        in: query
+        description: number of associated objects to return
+        schema:
+          type: integer
+          format: int64
+        example: 1
+      - name: q
+        in: query
+        description: restrict to associated object names that contain this value
+        schema:
+          type: string
+        example: Environment
+      responses:
+        "200":
+          description: field
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/Field'
+  /ws/{entity}/{uid}:
+    get:
+      tags:
+      - "collection, institution, dataProvider, dataResource, tempDataResource, dataHub"
+      summary: Get an entity for a specified entity uid
+      description: Get detailed information for a specific entity
+      operationId: getEntity
+      parameters:
+      - name: entity
+        in: path
+        description: "entity type -  e.g. datResource, dataProvider etc"
+        required: true
+        schema:
+          type: string
+        example: collection
+      - name: uid
+        in: path
+        description: uid of an instance of entity
+        required: true
+        schema:
+          type: string
+        example: co43
+      responses:
+        "200":
+          description: Entity Info
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Entity'
+    post:
+      tags:
+      - "collection, institution, dataProvider, dataResource, tempDataResource, dataHub"
+      summary: Insert or  update an entity
+      description: "Insert or update an  entity  - if uid is specified, entity must\
+        \ exist and is updated with the provided data"
+      operationId: updateEntity
+      parameters:
+      - name: entity
+        in: path
+        description: "entity i.e.  collection, institution, dataProvider, dataResource,\
+          \ tempDataResource, dataHub"
+        required: true
+        schema:
+          type: string
+        example: collection
+      - name: uid
+        in: path
+        description: optional uid of an instance of entity
+        required: true
+        schema:
+          type: string
+        example: co43
+      requestBody:
+        description: A JSON object containing the entity to be saved or updated
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "201":
+          description: Status of operation  -  inserted
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: object
+      security:
+      - openIdConnect: []
+  /ws/syncGBIF:
+    get:
+      tags:
+      - gbif
+      summary: Update All registrations with GBIF
+      operationId: syncGBIF
+      responses:
+        "200":
+          description: Status of GBIF sync operation
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: object
+      security:
+      - openIdConnect: []
+  /ws/{entity}/{uid}/contacts/{id}:
+    post:
+      tags:
+      - contacts
+      summary: Update or create a contact association for a single entity.
+      description: Update or create a contact for an entity with the specified entity
+        uid contact id
+      operationId: updateContactFor
+      parameters:
+      - name: entity
+        in: path
+        description: "metadata entity type  i.e. collection, institution, dataProvider,\
+          \ dataResource, dataHub"
+        required: true
+        schema:
+          type: string
+        example: collection
+      - name: uid
+        in: path
+        description: uid the entity instance
+        required: true
+        schema:
+          type: string
+        example: co43
+      - name: id
+        in: path
+        description: contact identifier value
+        required: true
+        schema:
+          type: string
+        example: 844
+      requestBody:
+        description: A JSON object containing the contact details to be updated
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "201":
+          description: Status of operation  -  inserted
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: object
+        "200":
+          description: Status of operation  -  updated
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: object
+      security:
+      - openIdConnect: []
+  /ws/gbif/scan/{uid}:
+    get:
+      tags:
+      - gbif
+      summary: Update the collectory with data from external resources GBIF
+      description: Update the collectory with data from external resources i.e. GBIF
+      operationId: scanGbif
+      parameters:
+      - name: uid
+        in: path
+        description: provider uid
+        required: true
+        schema:
+          type: string
+        example: 1
+      responses:
+        "200":
+          description: Result of the scan operation
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GbifScanResponse'
+      security:
+      - openIdConnect: []
+  /ws/ipt/scan/{uid}:
+    get:
+      tags:
+      - ipt
+      summary: Scan an IPT instance described by a data provider id
+      description: Scan an IPT instance described by a data provider id
+      operationId: scanIpt
+      parameters:
+      - name: uid
+        in: path
+        description: provider uid
+        required: true
+        schema:
+          type: string
+        example: dp1518
+      - name: create
+        in: query
+        description: Boolean flag to determine whether to update existing datasets
+          and create data resources for new datasets
+        schema:
+          type: boolean
+        example: false
+      - name: check
+        in: query
+        description: Boolean flag to  check to see ifresource needs updating by looking
+          at the data currency
+        schema:
+          type: boolean
+        example: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+          test/xml:
+            schema:
+              type: string
+          text/plain:
+            schema:
+              type: string
+      responses:
+        "200":
+          description: Result of the scan operation
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: string
+            test/xml:
+              schema:
+                type: string
+            text/plain:
+              schema:
+                type: string
+      security:
+      - openIdConnect: []
+  /ws/licence:
+    get:
+      tags:
+      - licence
+      summary: Get a list of available licences
+      operationId: getLicence
+      responses:
+        "200":
+          description: A list of available licences
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LicenceResponse'
+  /ws/citations:
+    post:
+      tags:
+      - citations
+      summary: Get citations for a list of data resource UIDs.
+      operationId: getCitations
+      requestBody:
+        description: A JSON array containing dataResource UIDs.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+            example:
+            - dr654
+            - dr653
+          text/csv:
+            schema:
+              type: array
+              items:
+                type: string
+            example:
+            - dr654
+            - dr653
+          text/plain:
+            schema:
+              type: array
+              items:
+                type: string
+            example:
+            - dr654
+            - dr653
+        required: true
+      responses:
+        "200":
+          description: citation
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Citation'
+            text/csv:
+              schema:
+                type: string
+            text/plain:
+              schema:
+                type: string
+  /ws/lookup/inst/{institutionCode}/coll/{collectionCode}:
+    get:
+      tags:
+      - "collection, hubs"
+      summary: Get the provider group for a collection and institution code
+      operationId: getProviderGroupForCollectionAndInstitutionCodes
+      parameters:
+      - name: institutionCode
+        in: path
+        description: Institution code
+        required: true
+        schema:
+          type: string
+        example: in105
+      - name: collectionCode
+        in: path
+        description: Collection code
+        required: true
+        schema:
+          type: string
+        example: co229
+      responses:
+        "200":
+          description: provider group summary
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderGroupSummaryResponse'
+  /ws/lookup/summary/{id}:
+    get:
+      tags:
+      - "collection, institution, dataProvider, dataResource, tempDataResource, dataHub"
+      summary: Get a summary information for an entity
+      operationId: getEntitySummary
+      parameters:
+      - name: id
+        in: path
+        description: Entity id
+        required: true
+        schema:
+          type: string
+        example: dp3874
+      responses:
+        "200":
+          description: entity summary
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitySummaryResponse'
+components:
+  schemas:
+    ContactModelResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        fax:
+          type: string
+        mobile:
+          type: string
+        publish:
+          type: boolean
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+    Field:
+      type: object
+    Entity:
+      type: object
+      properties:
+        name:
+          type: string
+        uri:
+          type: string
+        uid:
+          type: string
+        logo:
+          type: string
+    GbifScanResponse:
+      type: object
+      properties:
+        loadGuid:
+          type: string
+        trackingUrl:
+          type: string
+        updates:
+          type: array
+          items:
+            type: object
+        resources:
+          type: array
+          items:
+            type: object
+    LicenceResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+    Citation:
+      type: object
+      properties:
+        name:
+          type: string
+        citation:
+          type: string
+        rights:
+          type: string
+        link:
+          type: string
+        dataGeneralizations:
+          type: string
+        informationWithheld:
+          type: string
+        downloadLimit:
+          type: integer
+          format: int32
+        uid:
+          type: string
+        doi:
+          type: string
+    ProviderGroupSummaryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        uid:
+          type: string
+        uri:
+          type: string
+        name:
+          type: string
+        acronym:
+          type: string
+        shortDescription:
+          type: string
+        lsid:
+          type: string
+        taxonomyCoverageHints:
+          type: object
+    EntitySummaryResponse:
+      type: object
+      properties:
+        acronym:
+          type: string
+        collectionId:
+          type: string
+        collectionName:
+          type: string
+        collectionUid:
+          type: string
+        derivedCollCodes:
+          type: array
+          items:
+            type: string
+        derivedInstCodes:
+          type: array
+          items:
+            type: string
+        hubMembership:
+          type: object
+          additionalProperties:
+            type: string
+        id:
+          type: integer
+          format: int64
+        institutionId:
+          type: string
+        institutionLogoUrl:
+          type: string
+        institutionName:
+          type: string
+        institutionUid:
+          type: string
+        lsid:
+          type: string
+        name:
+          type: string
+        relatedDataProviders:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        relatedDataResources:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        shortDescription:
+          type: string
+        taxonomyCoverageHints:
+          type: object
+        uid:
+          type: string
+        uri:
+          type: string
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      name: jsessionid
+      in: cookie

@@ -1,16 +1,15 @@
 # API docs
 
-SBDI API documentation using [swagger-ui](https://github.com/swagger-api/swagger-ui).
+SBDI API documentation using [swagger-ui](https://github.com/swagger-api/swagger-ui). API specifications are downloaded from the various applications in production and included in, and served from, this application. When API:s change in production this app need to be updated (see below). 
 
 ## Usage
-
-On first use you need to download api specs with the command:
-```
-make download-specs
-```
-This can also be run when api specs have changed and should be updated.
 
 Run local server (using Docker):
 ```
 make run
+```
+
+Update specs from production:
+```
+make update-specs
 ```

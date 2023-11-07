@@ -1,0 +1,306 @@
+openapi: 3.0.1
+info:
+  title: Logger REST services
+  description: REST services for interacting with the logger webapp
+  termsOfService: https://docs.biodiversitydata.se/sbdi-data/sbdi-atlas-terms-of-use/
+  contact:
+    name: ""
+    email: ""
+  license:
+    name: Mozilla Public License 1.1
+    url: https://www.mozilla.org/en-US/MPL/1.1/
+  version: 4.2.0
+servers:
+- url: https://logger.biodiversitydata.se
+paths:
+  /service/emailBreakdown:
+    get:
+      tags:
+      - logger
+      summary: Get Email Breakdown
+      description: Get Email Breakdown
+      operationId: Get Email Breakdown
+      parameters:
+      - name: eventId
+        in: query
+        description: Event ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: entityUid
+        in: query
+        description: EntityUID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Get Email Breakdown
+  /service/logger/{id}:
+    get:
+      tags:
+      - logger
+      summary: Get Event log
+      description: Get Event log
+      operationId: Get Event log
+      parameters:
+      - name: id
+        in: path
+        description: Event ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Get Event log
+  /service/logger/events:
+    get:
+      tags:
+      - logger
+      summary: Get Event Types
+      description: Get Event Types
+      operationId: Get Event Types
+      responses:
+        "200":
+          description: Get Event Types
+  /service/reasonBreakdown:
+    get:
+      tags:
+      - logger
+      summary: Get Reason Breakdown
+      description: Get Reason Breakdown
+      operationId: Get Reason Breakdown
+      parameters:
+      - name: eventId
+        in: query
+        description: Event ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: entityUid
+        in: query
+        description: EntityUID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Get Reason Breakdown
+  /service/reasonBreakdownMonthly:
+    get:
+      tags:
+      - logger
+      summary: Get Reason Breakdown by Month
+      description: Get Reason Breakdown by Month
+      operationId: Get Reason Breakdown by Month
+      parameters:
+      - name: eventId
+        in: query
+        description: Event ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: entityUid
+        in: query
+        description: EntityUID
+        required: true
+        schema:
+          type: string
+      - name: reasonId
+        in: query
+        description: Reason ID
+        schema:
+          type: integer
+          format: int32
+      - name: sourceId
+        in: query
+        description: Source ID
+        schema:
+          type: integer
+          format: int32
+      - name: excludeReasonTypeId
+        in: query
+        description: Exclude Reason Type ID
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Get Reason Breakdown by Month
+  /service/logger/reasons:
+    get:
+      tags:
+      - logger
+      summary: Get Reason Types
+      description: Get Reason Types
+      operationId: Get Reason Types
+      responses:
+        "200":
+          description: Get Reason Types
+  /service/sourceBreakdown:
+    get:
+      tags:
+      - logger
+      summary: Get Source Breakdown
+      description: Get Source Breakdown
+      operationId: Get Source Breakdown
+      parameters:
+      - name: eventId
+        in: query
+        description: Event ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: entityUid
+        in: query
+        description: EntityUID
+        required: true
+        schema:
+          type: string
+      - name: excludeReasonTypeId
+        in: query
+        description: Exclude Reason Type ID
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Get Source Breakdown
+  /service/logger/sources:
+    get:
+      tags:
+      - logger
+      summary: Get Source Types
+      description: Get Source Types
+      operationId: Get Source Types
+      responses:
+        "200":
+          description: Get Source Types
+  /service/totalsByType:
+    get:
+      tags:
+      - logger
+      summary: Get Totals by Event Type
+      description: Get Totals by Event Type
+      operationId: Get Totals by Event Type
+      responses:
+        "200":
+          description: Get Totals by Event Type
+  /service/logger/get.json:
+    get:
+      tags:
+      - logger
+      summary: Get Monthly Breakdown
+      description: Get Monthly Breakdown
+      operationId: Get Monthly Breakdown
+      parameters:
+      - name: eventTypeId
+        in: query
+        description: Event Type ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: q
+        in: query
+        description: The entityUid to query on
+        required: true
+        schema:
+          type: string
+      - name: year
+        in: query
+        description: year
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Get Monthly Breakdown
+  /service/logger:
+    post:
+      tags:
+      - logger
+      summary: Create a new Event log
+      description: Create a new Event log
+      operationId: Create a new Event log
+      requestBody:
+        description: The created new Event log
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogEventVO'
+        required: true
+      responses:
+        "200":
+          description: Create a new Event log
+components:
+  schemas:
+    LogEventVO:
+      type: object
+      properties:
+        comment:
+          type: string
+        eventTypeId:
+          type: integer
+          format: int32
+        userIP:
+          type: string
+        userAgent:
+          type: string
+        recordCounts:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+        userEmail:
+          type: string
+        month:
+          type: string
+        reasonTypeId:
+          type: integer
+          format: int32
+        sourceTypeId:
+          type: integer
+          format: int32
+        sourceUrl:
+          type: string
+        recordCount:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+          writeOnly: true
+        recordCountConcurrent:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              opaque:
+                type: integer
+                format: int32
+              acquire:
+                type: integer
+                format: int32
+              release:
+                type: integer
+                format: int32
+                writeOnly: true
+              andIncrement:
+                type: integer
+                format: int32
+              andDecrement:
+                type: integer
+                format: int32
+              plain:
+                type: integer
+                format: int32
+          writeOnly: true
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      name: jsessionid
+      in: cookie

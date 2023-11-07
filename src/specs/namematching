@@ -1,0 +1,912 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "ALA Namematching API",
+    "description" : "A taxonomy service that maps scientific name queries onto taxon concepts",
+    "termsOfService" : "https://docs.biodiversitydata.se/sbdi-data/sbdi-atlas-terms-of-use/",
+    "license" : {
+      "name" : "Mozilla Public Licence 1.1",
+      "url" : "https://www.mozilla.org/en-US/MPL/1.1/"
+    },
+    "version" : "1.8.1"
+  },
+  "paths" : {
+    "/api/autocomplete" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Autocomplete search with the beginning of a scientific or common name.",
+        "description" : "Returns a list of matches. Up to 2 * max matches are returned.",
+        "operationId" : "autocomplete",
+        "parameters" : [ {
+          "name" : "q",
+          "in" : "query",
+          "description" : "The query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "eucalypt"
+        }, {
+          "name" : "max",
+          "in" : "query",
+          "description" : "Maximum results to return",
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 10
+          }
+        }, {
+          "name" : "includeSynonyms",
+          "in" : "query",
+          "description" : "Include synonyms",
+          "schema" : {
+            "type" : "boolean",
+            "default" : true
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/check" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Check a name/rank combination and see if it is valid.",
+        "description" : "Returns true if the result is valuid, false if not and null (empty) if unable to check because of an error (usually something like a homonym)",
+        "operationId" : "check",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "query",
+          "description" : "The scientific name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Animalia"
+        }, {
+          "name" : "rank",
+          "in" : "query",
+          "description" : "The Linnaean rank",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "kingdom"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Unable to check due to search error"
+          },
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "text/plain" : {
+                "example" : true
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/getByTaxonID" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Get taxon information by taxon identifier.",
+        "operationId" : "get",
+        "parameters" : [ {
+          "name" : "taxonID",
+          "in" : "query",
+          "description" : "The unique taxon identifier",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "https://id.biodiversity.org.au/node/apni/2908670"
+        }, {
+          "name" : "follow",
+          "in" : "query",
+          "description" : "Follow synonyms to the accepted taxon",
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Name Search Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/getAllByTaxonID" : {
+      "post" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Get bulk taxon information by a list of taxon identifiers.",
+        "operationId" : "getAll",
+        "parameters" : [ {
+          "name" : "taxonIDs",
+          "in" : "query",
+          "description" : "The list of unique taxon identifiers",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "example" : "https://id.biodiversity.org.au/node/apni/2908670"
+        }, {
+          "name" : "follow",
+          "in" : "query",
+          "description" : "Follow synonyms to the accepted taxon",
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Name Search Result"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/getAllNamesByTaxonID" : {
+      "post" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Get bulk taxon scientific names from a list of taxon identifiers.",
+        "operationId" : "getAllNames",
+        "parameters" : [ {
+          "name" : "taxonIDs",
+          "in" : "query",
+          "description" : "The list of unique taxon identifiers",
+          "required" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "example" : "https://id.biodiversity.org.au/node/apni/2908670"
+        }, {
+          "name" : "follow",
+          "in" : "query",
+          "description" : "Follow synonyms to the accepted taxon",
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/getCommonNamesForLSID" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Get taxon information by by vernacular (common) name.",
+        "description" : "The same Vernacular name may be given to multiple taxa with different scientific names. The result returned is a best-effort match.",
+        "operationId" : "getCommonNamesForLSID",
+        "parameters" : [ {
+          "name" : "lsid",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Red Kangaroo"
+        }, {
+          "name" : "max",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "example" : 10
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/getGuidsForTaxa" : {
+      "post" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Search for a list of LSIDs with a list of scientificName or scientificName(kingdom).",
+        "operationId" : "getGuidsForTaxa",
+        "requestBody" : {
+          "description" : "List of taxa",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/getNameByTaxonID" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Get the taxon scientific name by taxon identifier.",
+        "operationId" : "getName",
+        "parameters" : [ {
+          "name" : "taxonID",
+          "in" : "query",
+          "description" : "The unique taxon identifier",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "https://id.biodiversity.org.au/node/apni/2908670"
+        }, {
+          "name" : "follow",
+          "in" : "query",
+          "description" : "Follow synonyms to the accepted taxon",
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/searchByClassification" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Search by full classification via query parameters",
+        "description" : "Search based on a partially filled out classification. The search will use the parameters supplied to perform as precise a search as is possible.",
+        "operationId" : "match_2",
+        "parameters" : [ {
+          "name" : "scientificName",
+          "in" : "query",
+          "description" : "The scientific name. If not supplied, inferred from other parameters",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Dentimitrella austrina"
+        }, {
+          "name" : "kingdom",
+          "in" : "query",
+          "description" : "The kingdom name",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Animalia"
+        }, {
+          "name" : "phylum",
+          "in" : "query",
+          "description" : "The phylum name",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "class",
+          "in" : "query",
+          "description" : "The class name",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "order",
+          "in" : "query",
+          "description" : "The order name",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "family",
+          "in" : "query",
+          "description" : "The family name",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Columbellidae"
+        }, {
+          "name" : "genus",
+          "in" : "query",
+          "description" : "The genus name",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "specificEpithet",
+          "in" : "query",
+          "description" : "The specific epithet, the species part of a binomial name",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "infraspecificEpithet",
+          "in" : "query",
+          "description" : "The below species (subspecies, variety, form etc.) epithet",
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "rank",
+          "in" : "query",
+          "description" : "The taxon rank. If not supplied, it may be inferred from other parameters",
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "species"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Name Search Result"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Search by full classification",
+        "description" : "Search based on a partially filled out classification. The search will use the parameters contained in the body to perform as precise a search as is possible.",
+        "operationId" : "match",
+        "requestBody" : {
+          "description" : "Partially filled out classification",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Search Parameters"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Name Search Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/search" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Search by name",
+        "description" : "A simple search based only on scientific name. The search will not be able to resolve complications, such as homonyms.",
+        "operationId" : "match_1",
+        "parameters" : [ {
+          "name" : "q",
+          "in" : "query",
+          "description" : "The scientific name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Acacia dealbata"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Name Search Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/searchAllByClassification" : {
+      "post" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Bulk search by full classification",
+        "description" : "Search based on a list of partially filled out classifications. The result is a list of matches. Nulls are allowed in the list of searches. If a null is present, then no search is conducted and a null returned. This allows a client to send a partially cached list of requests to the server and just get matches on the specific elements needed.",
+        "operationId" : "matchAll",
+        "requestBody" : {
+          "description" : "List of partially filled out classifications",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "array",
+                "items" : {
+                  "$ref" : "#/components/schemas/Search Parameters"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Name Search Result"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/searchByVernacularName" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Get taxon information by by vernacular (common) name.",
+        "description" : "The same Vernacular name may be given to multiple taxa with different scientific names. The result returned is a best-effort match.",
+        "operationId" : "matchVernacular",
+        "parameters" : [ {
+          "name" : "vernacularName",
+          "in" : "query",
+          "description" : "The common name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Red Kangaroo"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Name Search Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/searchForLSID" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Search for an LSID with a scientific name.",
+        "operationId" : "searchForLSID",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "query",
+          "description" : "The name",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Acacia dealbata"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/searchForLsidById" : {
+      "get" : {
+        "tags" : [ "Taxonomy search" ],
+        "summary" : "Search for an LSID by ID",
+        "operationId" : "searchForLsidById",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "The ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "https://id.biodiversity.org.au/node/apni/2908670"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "text/plain" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Name Search Result" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean",
+            "description" : "Found/not found flag. A not-found result may be because the query is ambigious"
+          },
+          "scientificName" : {
+            "type" : "string",
+            "description" : "The scientific name. http://rs.tdwg.org/dwc/terms/scientificName",
+            "nullable" : true,
+            "example" : "Anas superciliosa superciliosa"
+          },
+          "scientificNameAuthorship" : {
+            "type" : "string",
+            "description" : "The scientific name authorship (with the scientific name, corresponds to the taxon concept). http://rs.tdwg.org/dwc/terms/scientificNameAuthorship",
+            "nullable" : true,
+            "example" : "Gmelin, 1789"
+          },
+          "taxonConceptID" : {
+            "type" : "string",
+            "description" : "The taxon concept identifier (placement in a taxonomy). http://rs.tdwg.org/dwc/terms/taxonConceptID",
+            "nullable" : true,
+            "example" : "urn:lsid:biodiversity.org.au:afd.taxon:7d8e4927-90d6-40ba-a1e9-d6e917d2270b"
+          },
+          "rank" : {
+            "type" : "string",
+            "description" : "The Linnaean rank (kingdom, family, species, etc.) of the taxon. http://rs.tdwg.org/dwc/terms/taxonRank",
+            "nullable" : true,
+            "example" : "subspecies"
+          },
+          "rankID" : {
+            "type" : "integer",
+            "description" : "The identifier for the Linnaean rank. http://id.ala.org.au/terms/1.0/rankID",
+            "format" : "int32",
+            "nullable" : true,
+            "example" : 8000
+          },
+          "lft" : {
+            "type" : "integer",
+            "description" : "The left-value for the position of this taxon in the taxonomic tree. http://id.ala.org.au/terms/1.0/left",
+            "format" : "int32",
+            "nullable" : true,
+            "example" : 892340
+          },
+          "rgt" : {
+            "type" : "integer",
+            "description" : "The right-value for the position of this taxon in the taxonomic tree. http://id.ala.org.au/terms/1.0/right",
+            "format" : "int32",
+            "nullable" : true,
+            "example" : 892345
+          },
+          "matchType" : {
+            "type" : "string",
+            "description" : "The type of taxon match. au.org.ala.names.model.MatchType",
+            "nullable" : true,
+            "example" : "fuzzyMatch",
+            "enum" : [ "exactMatch,canonicalMatch,phraseMatch,fuzzyMatch,vernacularMatch,higherMatch,taxonIdMatch" ]
+          },
+          "nameType" : {
+            "type" : "string",
+            "description" : "The type of supplied name. org.gbif.api.vocabulary.NameType",
+            "nullable" : true,
+            "example" : "SCIENTIFIC",
+            "enum" : [ "SCIENTIFIC,VIRUS,HYBRID,INFORMAL,CULTIVAR,CANDIDATUS,OTU,DOUBTFUL,PLACEHOLDER,NO_NAME" ]
+          },
+          "synonymType" : {
+            "type" : "string",
+            "description" : "The type of synonymy, if the supplied name was a synonym of the matched name. au.org.ala.names.model.SynonymType",
+            "nullable" : true,
+            "example" : "SUBJECTIVE_SYNONYM"
+          },
+          "kingdom" : {
+            "type" : "string",
+            "description" : "The Linnaean kingdom. http://rs.tdwg.org/dwc/terms/kingdom",
+            "nullable" : true,
+            "example" : "Animalia"
+          },
+          "kingdomID" : {
+            "type" : "string",
+            "description" : "The kingdom identifier. http://id.ala.org.au/terms/1.0/kingdomID",
+            "nullable" : true,
+            "example" : "urn:lsid:biodiversity.org.au:afd.taxon:4647863b-760d-4b59-aaa1-502c8cdf8d3c"
+          },
+          "phylum" : {
+            "type" : "string",
+            "description" : "The Linnaean phylum. http://rs.tdwg.org/dwc/terms/phylum",
+            "nullable" : true,
+            "example" : "Chordata"
+          },
+          "phylumID" : {
+            "type" : "string",
+            "description" : "The phylum identifier. http://id.ala.org.au/terms/1.0/phylumID",
+            "nullable" : true
+          },
+          "classs" : {
+            "type" : "string",
+            "description" : "The Linnaean class. http://rs.tdwg.org/dwc/terms/class",
+            "nullable" : true,
+            "example" : "Aves"
+          },
+          "classID" : {
+            "type" : "string",
+            "description" : "The class identifier. http://id.ala.org.au/terms/1.0/classID",
+            "nullable" : true
+          },
+          "order" : {
+            "type" : "string",
+            "description" : "The Linnaean order. http://rs.tdwg.org/dwc/terms/order",
+            "nullable" : true,
+            "example" : "Anseriformes"
+          },
+          "orderID" : {
+            "type" : "string",
+            "description" : "The order identifier. http://id.ala.org.au/terms/1.0/orderID",
+            "nullable" : true
+          },
+          "family" : {
+            "type" : "string",
+            "description" : "The Linnaean family. http://rs.tdwg.org/dwc/terms/family",
+            "nullable" : true,
+            "example" : "Anatidae"
+          },
+          "familyID" : {
+            "type" : "string",
+            "description" : "The family identifier. http://id.ala.org.au/terms/1.0/familyID",
+            "nullable" : true
+          },
+          "genus" : {
+            "type" : "string",
+            "description" : "The Linnaean genus. http://rs.tdwg.org/dwc/terms/genus",
+            "nullable" : true,
+            "example" : "Anas"
+          },
+          "genusID" : {
+            "type" : "string",
+            "description" : "The genus identifier. http://id.ala.org.au/terms/1.0/genusID",
+            "nullable" : true
+          },
+          "species" : {
+            "type" : "string",
+            "description" : "The species name. http://id.ala.org.au/terms/1.0/species",
+            "nullable" : true,
+            "example" : "Osphranter rufus"
+          },
+          "speciesID" : {
+            "type" : "string",
+            "description" : "The species identifier. http://id.ala.org.au/terms/1.0/speciesID",
+            "nullable" : true
+          },
+          "vernacularName" : {
+            "type" : "string",
+            "description" : "The main vernacular (common) name. http://rs.tdwg.org/dwc/terms/vernacularName",
+            "nullable" : true,
+            "example" : "Red Kangaroo"
+          },
+          "speciesGroup" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "Species groups for the taxon. http://id.ala.org.au/terms/1.0/speciesGroup",
+              "nullable" : true,
+              "example" : "Animals, Mammals"
+            }
+          },
+          "speciesSubgroup" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "Species sub-groups for the taxon. http://id.ala.org.au/terms/1.0/speciesSubgroup",
+              "nullable" : true,
+              "example" : "Herbivorous Marsupials"
+            }
+          },
+          "issues" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "Any issues with the matching process. A successful match will return noMatch. Otherwise a list of problems or possible problems with the match. au.org.ala.names.model.ErrorType",
+              "nullable" : true,
+              "example" : "homonym, misappliedName"
+            }
+          }
+        },
+        "description" : "A matching taxon (or not) from a search."
+      },
+      "Search Parameters" : {
+        "type" : "object",
+        "properties" : {
+          "kingdom" : {
+            "type" : "string",
+            "description" : "The Linnaean kingdom. http://rs.tdwg.org/dwc/terms/kingdom",
+            "example" : "Animalia"
+          },
+          "phylum" : {
+            "type" : "string",
+            "description" : "The Linnaean phylum. http://rs.tdwg.org/dwc/terms/phylum",
+            "example" : "Chordata"
+          },
+          "clazz" : {
+            "type" : "string",
+            "description" : "The Linnaean class. http://rs.tdwg.org/dwc/terms/class",
+            "example" : "Aves"
+          },
+          "order" : {
+            "type" : "string",
+            "description" : "The Linnaean order. http://rs.tdwg.org/dwc/terms/order",
+            "example" : "Anseriformes"
+          },
+          "family" : {
+            "type" : "string",
+            "description" : "The Linnaean family. http://rs.tdwg.org/dwc/terms/family",
+            "example" : "Anatidae"
+          },
+          "genus" : {
+            "type" : "string",
+            "description" : "The Linnaean genus. http://rs.tdwg.org/dwc/terms/genus",
+            "example" : "Anas"
+          },
+          "specificEpithet" : {
+            "type" : "string",
+            "description" : "The species part of a Linnaean binomial name. http://rs.tdwg.org/dwc/terms/specificEptithet",
+            "example" : "superciliosa"
+          },
+          "infraspecificEpithet" : {
+            "type" : "string",
+            "description" : "The below-species (subspecies, variety, form etc.) part of a Linnaean binomial name. http://rs.tdwg.org/dwc/terms/infraspecificEptithet",
+            "example" : "superciliosa"
+          },
+          "rank" : {
+            "type" : "string",
+            "description" : "The Linnaean rank of the expected result. http://rs.tdwg.org/dwc/terms/taxonRank",
+            "example" : "subspecies"
+          },
+          "verbatimTaxonRank" : {
+            "type" : "string",
+            "description" : "The Linnaean rank of the expected result, as supplied. http://rs.tdwg.org/dwc/terms/verbatimTaxonRank",
+            "example" : "SubSpecies"
+          },
+          "taxonConceptID" : {
+            "type" : "string",
+            "description" : "The expected taxon concept (placement in a taxonomy). http://rs.tdwg.org/dwc/terms/taxonConceptID",
+            "example" : "urn:lsid:biodiversity.org.au:afd.taxon:7d8e4927-90d6-40ba-a1e9-d6e917d2270b"
+          },
+          "taxonID" : {
+            "type" : "string",
+            "description" : "The expected taxon identifier. http://rs.tdwg.org/dwc/terms/taxonID",
+            "example" : "urn:lsid:biodiversity.org.au:afd.taxon:7d8e4927-90d6-40ba-a1e9-d6e917d2270b"
+          },
+          "scientificNameAuthorship" : {
+            "type" : "string",
+            "description" : "The scientific name authorship (with the scientific name, corresponds to the taxon concept). http://rs.tdwg.org/dwc/terms/scientificNameAuthorship",
+            "example" : "Gmelin, 1789"
+          },
+          "scientificName" : {
+            "type" : "string",
+            "description" : "The scientific name. http://rs.tdwg.org/dwc/terms/scientificName",
+            "example" : "Anas superciliosa superciliosa"
+          },
+          "vernacularName" : {
+            "type" : "string",
+            "description" : "The vernacular name. http://rs.tdwg.org/dwc/terms/vernacularName",
+            "example" : "Grey Duck"
+          },
+          "hints" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "array",
+              "description" : "Taxonomic hints. A map of Linnaean rank names onto possible values if there is difficulty looking up a name. This also acts as a sanity check on the returned results. http://rs.tdwg.org/dwc/terms/vernacularName",
+              "example" : {
+                "kingdom" : [ "Plantae", "Fungi" ]
+              },
+              "items" : {
+                "type" : "string",
+                "description" : "Taxonomic hints. A map of Linnaean rank names onto possible values if there is difficulty looking up a name. This also acts as a sanity check on the returned results. http://rs.tdwg.org/dwc/terms/vernacularName",
+                "example" : "{\"kingdom\":[\"Plantae\",\"Fungi\"]}"
+              }
+            },
+            "description" : "Taxonomic hints. A map of Linnaean rank names onto possible values if there is difficulty looking up a name. This also acts as a sanity check on the returned results. http://rs.tdwg.org/dwc/terms/vernacularName",
+            "example" : {
+              "kingdom" : [ "Plantae", "Fungi" ]
+            }
+          },
+          "loose" : {
+            "type" : "boolean",
+            "description" : "Allow a loose search. Loose searches will treat the scientific name as a vernacular name or a taxon identifier if the name cannot be found."
+          }
+        },
+        "description" : "A set of parameters that can be used to search for taxa. The various entries, kingdom etc., refer to names in the Linnaean hierarchy. The only strictly required thing is some sort of scientific name. However, the name can (sometimes) be deduced from other information if not given."
+      }
+    }
+  }
+}

@@ -1,0 +1,620 @@
+openapi: 3.0.1
+info:
+  title: Species REST services
+  description: REST services for interacting with the BIE webapp
+  termsOfService: https://docs.biodiversitydata.se/sbdi-data/sbdi-atlas-terms-of-use/
+  contact:
+    name: ""
+    email: ""
+  license:
+    name: Mozilla Public License 1.1
+    url: https://www.mozilla.org/en-US/MPL/1.1/
+  version: '@info.app.version@'
+servers:
+- url: https://species.biodiversitydata.se/ws
+paths:
+  /api/services/all:
+    get:
+      tags:
+      - admin webservices
+      summary: Import all features via web service
+      description: "Imports all information into the BIE offline index. The definition\
+        \ of \"all\" depends on the configuration of the service but usually includes\
+        \ importing dataset descriptions, spatial layers, taxonomies, etc. and then\
+        \ searching for images, denormalising synonyms and the like."
+      operationId: Import all features via web service
+      responses:
+        "200":
+          description: JSON response indicating job status
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+      security:
+      - openIdConnect: []
+  /api/services/status/{id}:
+    get:
+      tags:
+      - admin webservices
+      summary: Get a job status
+      description: Get the status of an import job
+      operationId: Get a job status
+      parameters:
+      - name: id
+        in: path
+        description: The job Id
+        required: true
+        schema:
+          type: string
+        example: 40eafb24-5fde-11ed-9b6a-0242ac120002
+      responses:
+        "200":
+          description: JSON response indicating job status
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+      security:
+      - openIdConnect: []
+  /search/auto:
+    get:
+      tags:
+      - Search
+      summary: Autocomplete search
+      description: Used to provide a list of scientific and common names that can
+        be used to automatically complete a supplied partial name.
+      operationId: Autocomplete search
+      parameters:
+      - name: q
+        in: query
+        description: The value to auto complete e.g. q=Mac
+        required: true
+        schema:
+          type: string
+        example: Mac
+      - name: idxType
+        in: query
+        description: "The index type to limit . Values include: * TAXON * REGION *\
+          \ COLLECTION * INSTITUTION * DATASET"
+        schema:
+          type: string
+        example: TAXON
+      - name: kingdom
+        in: query
+        description: The higher-order taxonomic rank to limit the result
+        schema:
+          type: string
+        example: plantae
+      - name: limit
+        in: query
+        description: The maximum number of results to return (default = 10)
+        schema:
+          type: integer
+          format: int32
+        example: 10
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /species/guids/bulklookup:
+    post:
+      tags:
+      - bulk
+      summary: Bulk retrieval of species by identifier(s)
+      description: Retrieve taxon information for a list of identifiers. This operation
+        can be used to retrieve large lists of taxa
+      operationId: 'Bulk species lookup -  with GUID '
+      requestBody:
+        description: ' The JSON map object the list of GUIDS'
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+            - https://id.biodiversity.org.au/taxon/apni/51311261
+            - https://id.biodiversity.org.au/taxon/apni/51370813
+        required: true
+      responses:
+        "200":
+          description: List of species info
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /childConcepts/{id}:
+    get:
+      tags:
+      - Search
+      summary: Get the child concepts of a taxon with the supplied GUID
+      description: Return the taxon concepts that are direct children of the specified
+        taxon
+      operationId: Get the child concepts of a taxon
+      parameters:
+      - name: id
+        in: path
+        description: "The guid of a specific taxon, data resource, layer etc. Since\
+          \ guids can be URLs but can also be interpolated into paths, a http:// or\
+          \ https:// prefix may be converted into http:/ or https:/ by the tomcat\
+          \ container. A supplied guid of, eg. https:/id.biodiversity.org.au/node/apni/50587232\
+          \ will be converted into https://id.biodiversity.org.au/node/apni/50587232"
+        required: true
+        schema:
+          type: string
+        example: https://id.biodiversity.org.au/node/apni/2905748
+      - name: within
+        in: query
+        description: Get children within this rank range
+        schema:
+          type: integer
+          format: int32
+          default: 200
+      - name: unranked
+        in: query
+        description: Include unranked children
+        schema:
+          type: boolean
+          default: true
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /classification/{id}:
+    get:
+      tags:
+      - Search
+      summary: Get higher classifications of taxon with the supplied GUID
+      description: "Provides a list of higher taxa for the requested taxon. Note,\
+        \ this service does not currently support JSONP (use of callback param) but\
+        \ this is planned for a future release."
+      operationId: Get higher classifications of a taxon
+      parameters:
+      - name: id
+        in: path
+        description: "The guid of a specific taxon, data resource, layer etc. Since\
+          \ guids can be URLs but can also be interpolated into paths, a http:// or\
+          \ https:// prefix may be converted into http:/ or https:/ by the tomcat\
+          \ container. A supplied guid of, eg. https:/id.biodiversity.org.au/node/apni/50587232\
+          \ will be converted into https://id.biodiversity.org.au/node/apni/50587232"
+        required: true
+        schema:
+          type: string
+        example: https://id.biodiversity.org.au/node/apni/2905748
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /download:
+    get:
+      tags:
+      - bulk
+      summary: Download the results of a species search
+      description: Search the BIE and return the taxonomic results of the search in
+        tabular form
+      operationId: Download the results of a species search
+      parameters:
+      - name: q
+        in: query
+        description: Query of the form field:value e.g. q=genus:Macropus or a free
+          text search e.g. q=Macropus
+        required: true
+        schema:
+          type: string
+      - name: fq
+        in: query
+        description: Filters to be applied to the original query. These are additional
+          params of the form fq=INDEXEDFIELD:VALUE e.g. fq=rank:kingdom. See http://bie.ala.org.au/ws/indexFields
+          for all the fields that a queryable.
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: "A comma separated list of SOLR fields to include in the download.\
+          \ Fields can be included in the download if they have been stored. See index\
+          \ fields listing. Default fields: taxonConceptID,rank,scientificName,establishmentMeans,rk_genus,rk_family,rk_order,rk_class,rk_phylum,rk_kingdom,datasetName"
+        required: true
+        schema:
+          type: string
+      - name: file
+        in: query
+        description: "The name of the file to be downloaded. Default: 'species.csv'"
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Search results as CSV file
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /guid/batch:
+    get:
+      tags:
+      - Search
+      summary: Batch lookup of multiple taxon names
+      description: Search for multiple names with individual name queries and return
+        short profiles for each name
+      operationId: Bulk species lookup
+      parameters:
+      - name: q
+        in: query
+        description: Query string
+        required: true
+        schema:
+          type: string
+        example: kangaroo
+      - name: callback
+        in: query
+        description: Name of callback function to wrap JSON output in. Provided for
+          JSONP cross-domain requests
+        schema:
+          type: string
+        example: handleResponse
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /guid/{name}:
+    get:
+      tags:
+      - Search
+      summary: Look up a taxon guid by name
+      description: Return a list of taxa which correspond to a specific taxon id and
+        which have images available
+      operationId: Look up a taxon guid by name
+      parameters:
+      - name: name
+        in: path
+        description: The name to search the taxon guid
+        required: true
+        schema:
+          type: string
+        example: kangaroo
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /imageSearch/{id}:
+    get:
+      tags:
+      - Search
+      summary: Search for a taxon with images
+      description: Return a list of taxa which correspond to a specific taxon id and
+        which have images available
+      operationId: Search for a taxon with images
+      parameters:
+      - name: id
+        in: path
+        description: "The guid of a specific taxon, data resource, layer etc. Since\
+          \ guids can be URLs but can also be interpolated into paths, a http:// or\
+          \ https:// prefix may be converted into http:/ or https:/ by the tomcat\
+          \ container. A supplied guid of, eg. https:/id.biodiversity.org.au/node/apni/50587232\
+          \ will be converted into https://id.biodiversity.org.au/node/apni/50587232"
+        required: true
+        schema:
+          type: string
+        example: https://id.biodiversity.org.au/node/apni/2905748
+      - name: start
+        in: query
+        description: "The records offset, to enable paging"
+        schema:
+          type: integer
+          format: int32
+        example: 1
+      - name: rows
+        in: query
+        description: "The number of records to return, to enable paging"
+        schema:
+          type: integer
+          format: int32
+        example: 5
+      - name: qc
+        in: query
+        description: "Solr query context, passed on to the search engine"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /search:
+    get:
+      tags:
+      - Search
+      summary: Search the BIE
+      description: Search the BIE by solr query  or free text search
+      operationId: Search the BIE
+      parameters:
+      - name: q
+        in: query
+        description: Primary search  query for the form field:value e.g. q=rk_genus:Macropus
+          or freee text e.g q=gum
+        required: true
+        schema:
+          type: string
+        example: gum
+      - name: fq
+        in: query
+        description: Filters to be applied to the original query. These are additional
+          params of the form fq=INDEXEDFIELD:VALUE  See http://bie.ala.org.au/ws/indexFields
+          for all the fields that a queryable.
+        schema:
+          type: string
+        example: imageAvailable:"true"
+      - name: start
+        in: query
+        description: "The records offset, to enable paging"
+        schema:
+          type: integer
+          format: int32
+        example: 0
+      - name: pageSize
+        in: query
+        description: The number of records to return
+        schema:
+          type: integer
+          format: int32
+        example: 5
+      - name: sort
+        in: query
+        description: "The field to sort the records by: i.e.  -  acceptedConceptName,\
+          \ score, scientificName, commonNameSingle, rank"
+        schema:
+          type: string
+        example: commonNameSingle
+      - name: dir
+        in: query
+        description: Sort direction 'asc' or 'desc'
+        schema:
+          type: string
+        example: desc
+      - name: facets
+        in: query
+        description: Comma separated list of fields to display facets for. Available
+          fields listed http://bie.ala.org.au/ws/indexFields.
+        schema:
+          type: string
+        example: "datasetName,commonNameExact"
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /species/lookup/bulk:
+    post:
+      tags:
+      - bulk
+      summary: Batch lookup of multiple taxon names
+      description: "Retrieve taxon information for a list of vernacular or scientific\
+        \ names. This operation can be used to retrieve large lists of taxa. By default,\
+        \ the operation searches for both vernacular names and scientific names. Requires\
+        \ a JSON map as a post body. The JSON map must contain a \"names\" key that\
+        \ is the list of scientific names. json {\"names\":[\"Macropus rufus\",\"\
+        Macropus greyi\"]} This service will return a list of results. This differs\
+        \ from the original bulk species lookup by including a null value when a name\
+        \ could not be located. To allow the lookup to consider common names, include\
+        \ a \"vernacular\":true value in the JSON map: json {\"names\":[\"Grevillea\"\
+        ],\"vernacular\":true}"
+      operationId: 'Bulk species lookup - revised JSON input '
+      requestBody:
+        description: ' The JSON map object the list of names'
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              names:
+              - Grevillea
+              vernacular: true
+        required: true
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+  /species/{id}:
+    get:
+      tags:
+      - Search
+      summary: Look up a species by guid for the taxon
+      description: Return a list of of species matching the provided guid
+      operationId: Look up a species by guid for a taxon
+      parameters:
+      - name: id
+        in: path
+        description: The guid for the taxon concept
+        required: true
+        schema:
+          type: string
+        example: https://id.biodiversity.org.au/node/apni/2905748
+      responses:
+        "200":
+          description: Search results
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      name: jsessionid
+      in: cookie
