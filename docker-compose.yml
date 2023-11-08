@@ -1,3 +1,5 @@
+# This file is primarily for running locally
+
 services:
 
   web:
