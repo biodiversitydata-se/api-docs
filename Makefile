@@ -13,3 +13,6 @@ update-specs:
 	curl -sS --max-time 30 --retry 1 "https://auth.biodiversitydata.se/userdetails/openapi/openapi" --output src/specs/userdetails
 	curl -sS --max-time 30 --retry 1 "https://sds.biodiversitydata.se/openapi/openapi" --output src/specs/sds
 	curl -sS --max-time 30 --retry 1 "https://namematching.biodiversitydata.se/openapi.json" --output src/specs/namematching
+
+release:
+	../sbdi-install/utils/make-release.sh
