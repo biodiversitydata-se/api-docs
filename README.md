@@ -4,7 +4,7 @@ SBDI API documentation using [swagger-ui](https://github.com/swagger-api/swagger
 
 ## Usage
 
-Run local server (using Docker):
+Run local server (using Docker) on http://localhost:8088:
 ```
 make run
 ```
