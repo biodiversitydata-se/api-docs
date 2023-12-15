@@ -9,7 +9,7 @@ info:
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
-  version: '@info.app.version@'
+  version: 3.0.0
 servers:
 - url: https://species.biodiversitydata.se/ws
 paths:
@@ -62,6 +62,112 @@ paths:
       responses:
         "200":
           description: JSON response indicating job status
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+      security:
+      - openIdConnect: []
+  /api/setImages:
+    get:
+      tags:
+      - admin webservices
+      summary: Set the preferred and hidden images for a taxon
+      operationId: setImages
+      parameters:
+      - name: name
+        in: query
+        description: Scientific Name
+        required: true
+        schema:
+          type: string
+      - name: guid
+        in: query
+        description: Taxon ID
+        required: true
+        schema:
+          type: string
+      - name: prefer
+        in: query
+        description: Comma delimited preferred Image IDs
+        required: true
+        schema:
+          type: string
+      - name: hide
+        in: query
+        description: Comma delimited hidden Image IDs
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+      security:
+      - openIdConnect: []
+  /api/setUrl:
+    get:
+      tags:
+      - admin webservices
+      summary: Set the preferred wiki URL for a taxon
+      operationId: setWikiUrl
+      parameters:
+      - name: name
+        in: query
+        description: Scientific Name
+        required: true
+        schema:
+          type: string
+      - name: guid
+        in: query
+        description: Taxon ID
+        required: true
+        schema:
+          type: string
+      - name: url
+        in: query
+        description: URL
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
           headers:
             Access-Control-Allow-Origin:
               description: CORS header

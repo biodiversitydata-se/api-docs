@@ -12,6 +12,62 @@ info:
 servers:
 - url: https://lists.biodiversitydata.se
 paths:
+  /ws/createItem:
+    post:
+      tags:
+      - createSpeciesListItem
+      summary: Create a species list item for a species list
+      description: Create a species list item for a species list
+      operationId: Create a species list item for a species list
+      parameters:
+      - name: druid
+        in: query
+        description: The data resource id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: "The JSON object containing new species list item guid, rawScientificName\
+          \ and extra fields and values."
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeciesListItemBody'
+        required: true
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*':
+              schema:
+                type: object
+  /webService/deleteItem:
+    get:
+      tags:
+      - deleteSpeciesListItem
+      summary: Delete a species list item for a species list
+      description: Delete a species list item for a species list
+      operationId: Delete a species list item for a species list
+      parameters:
+      - name: druid
+        in: query
+        description: The data resource id
+        required: true
+        schema:
+          type: string
+      - name: guid
+        in: query
+        description: The taxon id
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*':
+              schema:
+                type: object
   /ws/speciesList/filter:
     post:
       tags:
@@ -52,6 +108,47 @@ paths:
                 type: array
                 items:
                   type: string
+  /ws/findSpeciesByName:
+    get:
+      tags:
+      - List Items
+      summary: Get all KVPs in species list
+      description: Get all KVPs within a species list item for a specified species
+        list
+      operationId: Get all KVPs in a species list
+      parameters:
+      - name: druid
+        in: path
+        description: The data resource id or comma separated data resource ids to
+          identify a species list
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of of all available KVPs and the scientific name
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListItemKVPResponse'
   /ws/speciesList/unpublished:
     get:
       tags:
@@ -307,47 +404,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetListItemsForSpeciesResponse'
-  /ws/speciesListItemKvp/{druid}:
-    get:
-      tags:
-      - List Items
-      summary: Get all KVPs in species list
-      description: Get all KVPs within a species list item for a specified species
-        list
-      operationId: Get all KVPs in a species list
-      parameters:
-      - name: druid
-        in: path
-        description: The data resource id or comma separated data resource ids to
-          identify a species list
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: List of of all available KVPs and the scientific name
-          headers:
-            Access-Control-Allow-Origin:
-              description: CORS header
-              style: simple
-              schema:
-                type: String
-            Access-Control-Allow-Methods:
-              description: CORS header
-              style: simple
-              schema:
-                type: String
-            Access-Control-Allow-Headers:
-              description: CORS header
-              style: simple
-              schema:
-                type: String
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ListItemKVPResponse'
   /ws/speciesList/{druid}/taxa:
     get:
       tags:
@@ -698,6 +754,17 @@ paths:
       - openIdConnect: []
 components:
   schemas:
+    SpeciesListItemBody:
+      type: object
+      properties:
+        guid:
+          type: string
+        rawScientificName:
+          type: string
+        extra:
+          type: object
+          additionalProperties:
+            type: string
     FilterListsBody:
       type: object
       properties:
@@ -709,6 +776,17 @@ components:
           type: array
           items:
             type: string
+    ListItemKVPResponse:
+      type: object
+      properties:
+        kvps:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        name:
+          type: string
     GetListsResponse:
       type: object
       properties:
@@ -804,17 +882,6 @@ components:
           type: object
           additionalProperties:
             type: string
-    ListItemKVPResponse:
-      type: object
-      properties:
-        kvps:
-          type: array
-          items:
-            type: object
-            additionalProperties:
-              type: string
-        name:
-          type: string
     ListItemsByKeysResponse:
       type: object
       properties:
