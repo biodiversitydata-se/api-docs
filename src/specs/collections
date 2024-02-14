@@ -9,7 +9,7 @@ info:
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
-  version: 5.0.0
+  version: 5.1.1
 servers:
 - url: https://collections.biodiversitydata.se
 paths:
@@ -36,17 +36,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -88,21 +88,108 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContactModelResponse'
+      security:
+      - openIdConnect: []
+  /ws/{entity}:
+    get:
+      tags:
+      - "collection, institution, dataProvider, dataResource, tempDataResource, dataHub"
+      summary: list entities for a given type
+      operationId: listEntities
+      parameters:
+      - name: entity
+        in: path
+        description: "entity type; collection, institution, dataProvider, dataResource,\
+          \ tempDataResource, dataHub"
+        required: true
+        schema:
+          type: string
+        example: collection
+      responses:
+        "200":
+          description: List of entities
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Entity'
+    post:
+      tags:
+      - "collection, institution, dataProvider, dataResource, tempDataResource, dataHub"
+      summary: create entity
+      description: create entity
+      operationId: createEntity
+      parameters:
+      - name: entity
+        in: path
+        description: "entity i.e.  collection, institution, dataProvider, dataResource,\
+          \ tempDataResource, dataHub"
+        required: true
+        schema:
+          type: string
+        example: collection
+      requestBody:
+        description: A JSON object containing the entity to be saved or updated
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "201":
+          description: Status of operation
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
       security:
       - openIdConnect: []
   /ws/eml/{id}:
@@ -148,21 +235,78 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             text/xml:
               schema:
                 $ref: '#/components/schemas/Field'
+  /ws/find/{entity}:
+    post:
+      tags:
+      - "collection, institution, dataProvider, dataResource, tempDataResource, dataHub"
+      summary: Find entities for a list of entity uids
+      description: Find detailed information for a list of entities
+      operationId: findEntities
+      parameters:
+      - name: entity
+        in: path
+        description: "entity type; collection, institution, dataProvider, dataResource,\
+          \ tempDataResource, dataHub"
+        required: true
+        schema:
+          type: string
+        example: collection
+      - name: apikey
+        in: header
+        description: authorisation for dataResource connection details
+        schema:
+          type: string
+      requestBody:
+        description: List of uids as JSON list
+        content:
+          application/json: {}
+      responses:
+        "200":
+          description: Entity Info
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  oneOf:
+                  - $ref: '#/components/schemas/Collection'
+                  - $ref: '#/components/schemas/Institution'
+                  - $ref: '#/components/schemas/DataProvider'
+                  - $ref: '#/components/schemas/DataResource'
+                  - $ref: '#/components/schemas/TempDataResource'
+                  - $ref: '#/components/schemas/DataHub'
   /ws/{entity}/{uid}:
     get:
       tags:
@@ -173,7 +317,8 @@ paths:
       parameters:
       - name: entity
         in: path
-        description: "entity type -  e.g. datResource, dataProvider etc"
+        description: "entity type; collection, institution, dataProvider, dataResource,\
+          \ tempDataResource, dataHub"
         required: true
         schema:
           type: string
@@ -185,6 +330,11 @@ paths:
         schema:
           type: string
         example: co43
+      - name: apikey
+        in: header
+        description: authorisation for dataResource connection details
+        schema:
+          type: string
       responses:
         "200":
           description: Entity Info
@@ -193,29 +343,33 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Entity'
+                oneOf:
+                - $ref: '#/components/schemas/Collection'
+                - $ref: '#/components/schemas/Institution'
+                - $ref: '#/components/schemas/DataProvider'
+                - $ref: '#/components/schemas/DataResource'
+                - $ref: '#/components/schemas/TempDataResource'
+                - $ref: '#/components/schemas/DataHub'
     post:
       tags:
       - "collection, institution, dataProvider, dataResource, tempDataResource, dataHub"
-      summary: Insert or  update an entity
-      description: "Insert or update an  entity  - if uid is specified, entity must\
-        \ exist and is updated with the provided data"
+      summary: Update an entity
+      description: "Update an  entity  - if uid is specified, entity must exist and\
+        \ is updated with the provided data"
       operationId: updateEntity
       parameters:
       - name: entity
@@ -228,7 +382,7 @@ paths:
         example: collection
       - name: uid
         in: path
-        description: optional uid of an instance of entity
+        description: uid of an instance of entity
         required: true
         schema:
           type: string
@@ -248,17 +402,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -279,17 +433,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -342,17 +496,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -364,17 +518,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -404,17 +558,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -469,17 +623,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -506,17 +660,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -529,6 +683,12 @@ paths:
       - citations
       summary: Get citations for a list of data resource UIDs.
       operationId: getCitations
+      parameters:
+      - name: Accept
+        in: header
+        schema:
+          type: string
+        example: application/json or text/csv or text/plain
       requestBody:
         description: A JSON array containing dataResource UIDs.
         content:
@@ -565,17 +725,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -617,17 +777,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -654,17 +814,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -700,6 +860,918 @@ components:
           format: date-time
     Field:
       type: object
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        postBox:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postcode:
+          type: string
+        country:
+          type: string
+        id:
+          type: integer
+          format: int64
+    Attribution:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        uid:
+          type: string
+        id:
+          type: integer
+          format: int64
+    Collection:
+      type: object
+      properties:
+        collectionType:
+          type: string
+        active:
+          type: string
+        numRecords:
+          type: integer
+          format: int32
+        numRecordsDigitised:
+          type: integer
+          format: int32
+        states:
+          type: string
+        geographicDescription:
+          type: string
+        eastCoordinate:
+          type: number
+        westCoordinate:
+          type: number
+        northCoordinate:
+          type: number
+        southCoordinate:
+          type: number
+        startDate:
+          type: string
+        endDate:
+          type: string
+        kingdomCoverage:
+          type: string
+        scientificNames:
+          type: string
+        subCollections:
+          type: string
+        institution:
+          $ref: '#/components/schemas/Institution'
+        id:
+          type: integer
+          format: int64
+        providerMap:
+          $ref: '#/components/schemas/ProviderMap'
+        externalIdentifiers:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        state:
+          type: string
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        listOfCollectionCodesForLookup:
+          type: array
+          items:
+            type: string
+        listOfInstitutionCodesForLookup:
+          type: array
+          items:
+            type: string
+        inexactlyMapped:
+          type: boolean
+        alapartner:
+          type: boolean
+        collectionAttributionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribution'
+        attributionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribution'
+        primaryContact:
+          $ref: '#/components/schemas/ContactFor'
+        primaryPublicContact:
+          $ref: '#/components/schemas/ContactFor'
+        providerDataResources:
+          type: object
+        providerDataProviders:
+          type: object
+        pubShortDescription:
+          type: string
+        userLastModified:
+          type: string
+        websiteUrl:
+          type: string
+        networkMembership:
+          type: string
+        attributions:
+          type: string
+        publicContactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        altitude:
+          type: string
+        acronym:
+          type: string
+        techDescription:
+          type: string
+        gbifRegistryKey:
+          type: string
+        phone:
+          type: string
+        imageRef:
+          $ref: '#/components/schemas/Image'
+        contactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        guid:
+          type: string
+        taxonomyHints:
+          type: string
+        pubDescription:
+          type: string
+        latitude:
+          type: number
+          format: double
+        email:
+          type: string
+        notes:
+          type: string
+        isALAPartner:
+          type: boolean
+        logoRef:
+          $ref: '#/components/schemas/Image'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        longitude:
+          type: number
+          format: double
+        focus:
+          type: string
+        institutionId:
+          type: object
+        providerMapId:
+          type: object
+    Contact:
+      type: object
+      properties:
+        title:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+        mobile:
+          type: string
+        email:
+          type: string
+        fax:
+          type: string
+        notes:
+          type: string
+        publish:
+          type: boolean
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        userLastModified:
+          type: string
+        id:
+          type: integer
+          format: int64
+    ContactFor:
+      type: object
+      properties:
+        contact:
+          $ref: '#/components/schemas/Contact'
+        entityUid:
+          type: string
+        role:
+          type: string
+        administrator:
+          type: boolean
+        primaryContact:
+          type: boolean
+        notify:
+          type: boolean
+        dateCreated:
+          type: string
+          format: date-time
+        dateLastModified:
+          type: string
+          format: date-time
+        userLastModified:
+          type: string
+        id:
+          type: integer
+          format: int64
+        contactId:
+          type: object
+    ExternalIdentifier:
+      type: object
+      properties:
+        entityUid:
+          type: string
+        identifier:
+          type: string
+        source:
+          type: string
+        uri:
+          type: string
+        id:
+          type: integer
+          format: int64
+        label:
+          type: string
+    Image:
+      type: object
+      properties:
+        file:
+          type: string
+        caption:
+          type: string
+        attribution:
+          type: string
+        copyright:
+          type: string
+        id:
+          type: integer
+          format: int64
+    Institution:
+      type: object
+      properties:
+        institutionType:
+          type: string
+        childInstitutions:
+          type: string
+        gbifCountryToAttribute:
+          type: string
+        id:
+          type: integer
+          format: int64
+        collections:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Collection'
+        externalIdentifiers:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        state:
+          type: string
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        alapartner:
+          type: boolean
+        attributionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribution'
+        primaryContact:
+          $ref: '#/components/schemas/ContactFor'
+        primaryPublicContact:
+          $ref: '#/components/schemas/ContactFor'
+        providerDataResources:
+          type: object
+        providerDataProviders:
+          type: object
+        pubShortDescription:
+          type: string
+        userLastModified:
+          type: string
+        websiteUrl:
+          type: string
+        networkMembership:
+          type: string
+        attributions:
+          type: string
+        publicContactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        altitude:
+          type: string
+        acronym:
+          type: string
+        techDescription:
+          type: string
+        gbifRegistryKey:
+          type: string
+        phone:
+          type: string
+        imageRef:
+          $ref: '#/components/schemas/Image'
+        contactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        guid:
+          type: string
+        taxonomyHints:
+          type: string
+        pubDescription:
+          type: string
+        latitude:
+          type: number
+          format: double
+        email:
+          type: string
+        notes:
+          type: string
+        isALAPartner:
+          type: boolean
+        logoRef:
+          $ref: '#/components/schemas/Image'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        longitude:
+          type: number
+          format: double
+        focus:
+          type: string
+        linkedDataResources:
+          type: array
+          items:
+            type: string
+    ProviderCode:
+      type: object
+      properties:
+        code:
+          type: string
+        id:
+          type: integer
+          format: int64
+    ProviderMap:
+      type: object
+      properties:
+        institution:
+          $ref: '#/components/schemas/Institution'
+        collection:
+          $ref: '#/components/schemas/Collection'
+        matchAnyCollectionCode:
+          type: boolean
+        exact:
+          type: boolean
+        warning:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        id:
+          type: integer
+          format: int64
+        collectionCodes:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderCode'
+        institutionCodes:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderCode'
+        institutionId:
+          type: object
+        collectionId:
+          type: object
+    DataProvider:
+      type: object
+      properties:
+        hiddenJSON:
+          type: string
+        gbifCountryToAttribute:
+          type: string
+        id:
+          type: integer
+          format: int64
+        resources:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/DataResource'
+        externalIdentifiers:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        consumerInstitutions:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+        consumerCollections:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Collection'
+        state:
+          type: string
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        attributionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribution'
+        primaryContact:
+          $ref: '#/components/schemas/ContactFor'
+        primaryPublicContact:
+          $ref: '#/components/schemas/ContactFor'
+        pubShortDescription:
+          type: string
+        userLastModified:
+          type: string
+        websiteUrl:
+          type: string
+        networkMembership:
+          type: string
+        attributions:
+          type: string
+        publicContactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        altitude:
+          type: string
+        acronym:
+          type: string
+        techDescription:
+          type: string
+        gbifRegistryKey:
+          type: string
+        phone:
+          type: string
+        imageRef:
+          $ref: '#/components/schemas/Image'
+        contactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        guid:
+          type: string
+        taxonomyHints:
+          type: string
+        pubDescription:
+          type: string
+        latitude:
+          type: number
+          format: double
+        email:
+          type: string
+        notes:
+          type: string
+        isALAPartner:
+          type: boolean
+        logoRef:
+          $ref: '#/components/schemas/Image'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        longitude:
+          type: number
+          format: double
+        focus:
+          type: string
+    DataResource:
+      type: object
+      properties:
+        rights:
+          type: string
+        citation:
+          type: string
+        licenseType:
+          type: string
+        licenseVersion:
+          type: string
+        resourceType:
+          type: string
+        provenance:
+          type: string
+        informationWithheld:
+          type: string
+        dataGeneralizations:
+          type: string
+        permissionsDocument:
+          type: string
+        permissionsDocumentType:
+          type: string
+        riskAssessment:
+          type: boolean
+        filed:
+          type: boolean
+        status:
+          type: string
+        harvestingNotes:
+          type: string
+        mobilisationNotes:
+          type: string
+        harvestFrequency:
+          type: integer
+          format: int32
+        lastChecked:
+          type: string
+          format: date-time
+        dataCurrency:
+          type: string
+          format: date-time
+        connectionParameters:
+          type: string
+        imageMetadata:
+          type: string
+        defaultDarwinCoreValues:
+          type: string
+        downloadLimit:
+          type: integer
+          format: int32
+        contentTypes:
+          type: string
+        publicArchiveAvailable:
+          type: boolean
+        gbifDataset:
+          type: boolean
+        isShareableWithGBIF:
+          type: boolean
+        dataProvider:
+          $ref: '#/components/schemas/DataProvider'
+        institution:
+          $ref: '#/components/schemas/Institution'
+        makeContactPublic:
+          type: boolean
+        isPrivate:
+          type: boolean
+        repatriationCountry:
+          type: string
+        dataCollectionProtocolName:
+          type: string
+        dataCollectionProtocolDoc:
+          type: string
+        suitableFor:
+          type: string
+        suitableForOtherDetail:
+          type: string
+        purpose:
+          type: string
+        geographicDescription:
+          type: string
+        westBoundingCoordinate:
+          type: string
+        eastBoundingCoordinate:
+          type: string
+        northBoundingCoordinate:
+          type: string
+        southBoundingCoordinate:
+          type: string
+        beginDate:
+          type: string
+        endDate:
+          type: string
+        methodStepDescription:
+          type: string
+        qualityControlDescription:
+          type: string
+        gbifDoi:
+          type: string
+        id:
+          type: integer
+          format: int64
+        externalIdentifiers:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        consumerInstitutions:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Institution'
+        consumerCollections:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Collection'
+        state:
+          type: string
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        attributionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribution'
+        primaryContact:
+          $ref: '#/components/schemas/ContactFor'
+        primaryPublicContact:
+          $ref: '#/components/schemas/ContactFor'
+        pubShortDescription:
+          type: string
+        userLastModified:
+          type: string
+        websiteUrl:
+          type: string
+        networkMembership:
+          type: string
+        attributions:
+          type: string
+        publicContactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        altitude:
+          type: string
+        acronym:
+          type: string
+        techDescription:
+          type: string
+        gbifRegistryKey:
+          type: string
+        phone:
+          type: string
+        imageRef:
+          $ref: '#/components/schemas/Image'
+        contactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        guid:
+          type: string
+        taxonomyHints:
+          type: string
+        pubDescription:
+          type: string
+        latitude:
+          type: number
+          format: double
+        email:
+          type: string
+        notes:
+          type: string
+        isALAPartner:
+          type: boolean
+        logoRef:
+          $ref: '#/components/schemas/Image'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        longitude:
+          type: number
+          format: double
+        focus:
+          type: string
+        institutionId:
+          type: object
+        verified:
+          type: boolean
+        creativeCommons:
+          type: boolean
+        dataProviderId:
+          type: object
+    TempDataResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        alaId:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        numberOfRecords:
+          type: integer
+          format: int32
+        webserviceUrl:
+          type: string
+        uiUrl:
+          type: string
+        status:
+          type: string
+        isContactPublic:
+          type: boolean
+        description:
+          type: string
+        dataGeneralisations:
+          type: string
+        informationWithheld:
+          type: string
+        license:
+          type: string
+        citation:
+          type: string
+        sourceFile:
+          type: string
+        prodUid:
+          type: string
+        keyFields:
+          type: string
+        csvSeparator:
+          type: string
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        primaryContact:
+          $ref: '#/components/schemas/ContactFor'
+        primaryPublicContact:
+          $ref: '#/components/schemas/ContactFor'
+        publicContactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        contactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+    DataHub:
+      type: object
+      properties:
+        memberInstitutions:
+          type: string
+        memberCollections:
+          type: string
+        memberDataResources:
+          type: string
+        members:
+          type: string
+        id:
+          type: integer
+          format: int64
+        externalIdentifiers:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalIdentifier'
+        state:
+          type: string
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        attributionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribution'
+        primaryContact:
+          $ref: '#/components/schemas/ContactFor'
+        primaryPublicContact:
+          $ref: '#/components/schemas/ContactFor'
+        pubShortDescription:
+          type: string
+        userLastModified:
+          type: string
+        websiteUrl:
+          type: string
+        networkMembership:
+          type: string
+        attributions:
+          type: string
+        publicContactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        altitude:
+          type: string
+        acronym:
+          type: string
+        techDescription:
+          type: string
+        gbifRegistryKey:
+          type: string
+        phone:
+          type: string
+        imageRef:
+          $ref: '#/components/schemas/Image'
+        contactsPrimaryFirst:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        guid:
+          type: string
+        taxonomyHints:
+          type: string
+        pubDescription:
+          type: string
+        latitude:
+          type: number
+          format: double
+        email:
+          type: string
+        notes:
+          type: string
+        isALAPartner:
+          type: boolean
+        logoRef:
+          $ref: '#/components/schemas/Image'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactFor'
+        longitude:
+          type: number
+          format: double
+        focus:
+          type: string
     Entity:
       type: object
       properties:
