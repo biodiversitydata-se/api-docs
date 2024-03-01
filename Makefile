@@ -11,7 +11,7 @@ update-specs:
 	curl -sS --max-time 30 --retry 1 "https://images.biodiversitydata.se/openapi/openapi" --output src/specs/images
 	curl -sS --max-time 30 --retry 1 "https://logger.biodiversitydata.se/openapi/openapi" --output src/specs/logger
 	curl -sS --max-time 30 --retry 1 "https://auth.biodiversitydata.se/userdetails/openapi/openapi" --output src/specs/userdetails
-	curl -sS --max-time 30 --retry 1 "https://sds.biodiversitydata.se/openapi/openapi" --output src/specs/sds
+	curl -sS --max-time 30 --retry 1 "https://sensitive.biodiversitydata.se/swagger.json" --output src/specs/sensitive
 	curl -sS --max-time 30 --retry 1 "https://namematching.biodiversitydata.se/openapi.json" --output src/specs/namematching
 
 release:

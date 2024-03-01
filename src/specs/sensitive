@@ -1,0 +1,858 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "A sensitive data service that maps taxon, location and date information into ",
+    "version" : "1.2",
+    "title" : "ALA Sensitive Data API",
+    "termsOfService" : "https://docs.biodiversitydata.se/sbdi-data/sbdi-atlas-terms-of-use/",
+    "license" : {
+      "name" : "Mozilla Public Licence 1.1",
+      "url" : "https://www.mozilla.org/en-US/MPL/1.1/"
+    }
+  },
+  "tags" : [ {
+    "name" : "Conservation status management"
+  }, {
+    "name" : "Sensitive data information"
+  } ],
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/api/process" : {
+      "post" : {
+        "tags" : [ "Conservation status management" ],
+        "summary" : "Process occurrence properties for a sensitive species",
+        "description" : "Applies the sensitivity processing rules for a sensitive species to properties from an occurrence record.",
+        "operationId" : "process",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ProcessQuery"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SensitivityReport"
+            }
+          }
+        }
+      }
+    },
+    "/api/report" : {
+      "get" : {
+        "tags" : [ "Conservation status management" ],
+        "summary" : "Provide a sensitivity report for a taxon/zone combination.",
+        "description" : "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. The resulting report can be used, in combination with the list of generalisations, to process an occurrence.",
+        "operationId" : "report",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "scientificName",
+          "in" : "query",
+          "description" : "The scientific name of the taxon",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "Psilotum complanatum"
+        }, {
+          "name" : "taxonId",
+          "in" : "query",
+          "description" : "The taxon identifier",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "https://id.biodiversity.org.au/node/apni/2914286"
+        }, {
+          "name" : "dataResourceUid",
+          "in" : "query",
+          "description" : "The source data resource identifier",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "dr1654"
+        }, {
+          "name" : "stateProvince",
+          "in" : "query",
+          "description" : "The state or province zone identifier",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "NSW"
+        }, {
+          "name" : "country",
+          "in" : "query",
+          "description" : "The country zone identifier",
+          "required" : false,
+          "type" : "string",
+          "x-example" : "AUS"
+        }, {
+          "name" : "zone",
+          "in" : "query",
+          "description" : "The zone identifiers ",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi",
+          "x-example" : "FFEZ"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SensitivityReport"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Conservation status management" ],
+        "summary" : "Provide a sensitivity report for a taxon/zone combination.",
+        "description" : "This provides a report on whether the combination of taxon/zone/data resource is sensitive or not and the sensitivity instances. The resulting report can be used, in combination with the list of generalisations, to process an occurrence.",
+        "operationId" : "report_1",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/SensitivityQuery"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SensitivityReport"
+            }
+          }
+        }
+      }
+    },
+    "/api/generalisations" : {
+      "get" : {
+        "tags" : [ "Conservation status management" ],
+        "summary" : "Get the list of generalisation rules to apply to an occurrence record if the record is sensitive.",
+        "description" : "The list of actions to take. These are rules to apply to fields and use the sensitivity instance to determine parameters, such as distance to generalise.",
+        "operationId" : "getGeneralisations",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Generalisation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/isSensitive" : {
+      "get" : {
+        "tags" : [ "Conservation status management" ],
+        "summary" : "Check to see if a species is potentially sensitive",
+        "description" : "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive.",
+        "operationId" : "isSensitive",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "scientificName",
+          "in" : "query",
+          "description" : "The scientific name of the taxon",
+          "required" : true,
+          "type" : "string",
+          "x-example" : "Acacia dealbata"
+        }, {
+          "name" : "taxonId",
+          "in" : "query",
+          "description" : "The taxonomc identifier for the taxon",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Conservation status management" ],
+        "summary" : "Check to see if a species is potentially sensitive",
+        "description" : "Search based on a species name or taxon and see whether it is in the list of potentially sensitive species. Sensitive species declarations are based on geography; this method simply indicates whether a species might be classified as sensitive.",
+        "operationId" : "isSensitive_1",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/SpeciesCheck"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/api/sensitiveDataFields" : {
+      "get" : {
+        "tags" : [ "Conservation status management" ],
+        "summary" : "Get a list of the fields that the SDS service uses and can manipulate, as URIs",
+        "description" : "The list of occurrence, event, location and taxonomy fields that the SDS can alter or fuzz, depending on sensitivity rules.",
+        "operationId" : "getSensitiveDataFields",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ws/categories" : {
+      "get" : {
+        "tags" : [ "Sensitive data information" ],
+        "summary" : "Get the sensitive data categories",
+        "description" : "Each category refers to a regulatory sensitivity category",
+        "operationId" : "getCategories",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/SensitivityCategory"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ws/species" : {
+      "get" : {
+        "tags" : [ "Sensitive data information" ],
+        "summary" : "Get the sensitive data species",
+        "description" : "The list of species that are sensitive, along with the specific zone/category sensitivity instances.",
+        "operationId" : "getSensitive",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/SensitiveTaxon"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ws/layers" : {
+      "get" : {
+        "tags" : [ "Sensitive data information" ],
+        "summary" : "Get the geospatial layers used by the sensitive data service",
+        "description" : "Layers are referenced by id. See getZones for zones linking to layers.",
+        "operationId" : "getLayers",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ws/zones" : {
+      "get" : {
+        "tags" : [ "Sensitive data information" ],
+        "summary" : "Get the sensitive data zones",
+        "description" : "Each zone corresponds to a geospatial region, backed by a layer identifier",
+        "operationId" : "getZones",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/SensitivityZone"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "GeneralisationRule" : {
+      "type" : "object",
+      "required" : [ "generalisation" ],
+      "properties" : {
+        "generalisation" : {
+          "type" : "string",
+          "example" : "10km",
+          "description" : "The generalisation to apply. A string giving a measurable distance or precision Units recognised are metres (m) or kilometres (km) or WITHHOLD to withhold entirely",
+          "readOnly" : true
+        }
+      }
+    },
+    "Message" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "description" : "The message type.",
+          "readOnly" : true,
+          "enum" : [ "ERROR", "WARNING", "ALERT", "INFO" ]
+        },
+        "category" : {
+          "type" : "string",
+          "description" : "The message category.",
+          "readOnly" : true
+        },
+        "message" : {
+          "type" : "string",
+          "description" : "The message text.",
+          "readOnly" : true
+        }
+      },
+      "description" : "A validation message."
+    },
+    "SensitiveTaxon" : {
+      "type" : "object",
+      "properties" : {
+        "scientificName" : {
+          "type" : "string",
+          "description" : "The taxon scientific name",
+          "readOnly" : true
+        },
+        "taxonId" : {
+          "type" : "string",
+          "description" : "The taxon identifier",
+          "readOnly" : true
+        },
+        "family" : {
+          "type" : "string",
+          "description" : "The taxon family name",
+          "readOnly" : true
+        },
+        "acceptedName" : {
+          "type" : "string",
+          "description" : "The taxon accepted name, if this is a synonym",
+          "readOnly" : true
+        },
+        "commonName" : {
+          "type" : "string",
+          "description" : "Any common name associated with the taxon",
+          "readOnly" : true
+        },
+        "taxonRank" : {
+          "type" : "string",
+          "description" : "The taxon rank",
+          "readOnly" : true
+        },
+        "instances" : {
+          "type" : "array",
+          "description" : "Sensitivity information associated with this taxon",
+          "readOnly" : true,
+          "items" : {
+            "$ref" : "#/definitions/SensitivityInstance"
+          }
+        }
+      },
+      "description" : "A description of a sensitive taxon."
+    },
+    "SensitivityCategory" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "The sensitivity category identifier",
+          "readOnly" : true
+        },
+        "value" : {
+          "type" : "string",
+          "description" : "A description of the sensitivity category.",
+          "readOnly" : true
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "The type of category",
+          "readOnly" : true,
+          "enum" : [ "CONSERVATION", "PLANT_PEST" ]
+        }
+      },
+      "description" : "A specific sensitivity rule applying to a taxon in a particular zone."
+    },
+    "SensitivityInstance" : {
+      "type" : "object",
+      "required" : [ "type" ],
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "description" : "The type of sensitivity this instance manages",
+          "readOnly" : true,
+          "enum" : [ "CONSERVATION", "PEST" ]
+        },
+        "category" : {
+          "description" : "The sensitivity category",
+          "readOnly" : true,
+          "$ref" : "#/definitions/SensitivityCategory"
+        },
+        "authority" : {
+          "type" : "string",
+          "description" : "The name/acronym of the authority responsible for designating this instance.",
+          "readOnly" : true
+        },
+        "dataResourceId" : {
+          "type" : "string",
+          "description" : "The data resource that holds the sensitivity information",
+          "readOnly" : true
+        },
+        "zone" : {
+          "description" : "The zone that this sensitivity instance applies to.",
+          "readOnly" : true,
+          "$ref" : "#/definitions/SensitivityZone"
+        },
+        "reason" : {
+          "type" : "string",
+          "description" : "The reason for making this taxon/zone sensitive",
+          "readOnly" : true
+        },
+        "remarks" : {
+          "type" : "string",
+          "description" : "Any additional remarks",
+          "readOnly" : true
+        },
+        "generalisation" : {
+          "description" : "The generalisation to apply to coordinates",
+          "readOnly" : true,
+          "$ref" : "#/definitions/GeneralisationRule"
+        },
+        "fromDate" : {
+          "type" : "string",
+          "format" : "date-time",
+          "description" : "The date this instance applies from",
+          "readOnly" : true
+        },
+        "toDate" : {
+          "type" : "string",
+          "format" : "date-time",
+          "description" : "The date this instance applies to",
+          "readOnly" : true
+        },
+        "transientEvents" : {
+          "type" : "array",
+          "description" : "Any transient events attached to this instance.",
+          "readOnly" : true,
+          "items" : {
+            "$ref" : "#/definitions/TransientEvent"
+          }
+        }
+      },
+      "description" : "A specific sensitivity rule applying to a taxon in a particular zone."
+    },
+    "SensitivityReport" : {
+      "type" : "object",
+      "properties" : {
+        "valid" : {
+          "type" : "boolean",
+          "description" : "Whether the result is valid",
+          "readOnly" : true
+        },
+        "sensitive" : {
+          "type" : "boolean",
+          "description" : "Is this a sensitive occurrence?",
+          "readOnly" : true
+        },
+        "loadable" : {
+          "type" : "boolean",
+          "description" : "Should this occurrence be loaded?",
+          "readOnly" : true
+        },
+        "accessControl" : {
+          "type" : "boolean",
+          "description" : "Should there be access control on this occurrence?",
+          "readOnly" : true
+        },
+        "instances" : {
+          "type" : "array",
+          "description" : "The sensitivity instances that is occurrence has triggered",
+          "readOnly" : true,
+          "items" : {
+            "$ref" : "#/definitions/SensitivityInstance"
+          }
+        },
+        "report" : {
+          "description" : "The validation report for this occurrence",
+          "readOnly" : true,
+          "$ref" : "#/definitions/ValidationReport"
+        },
+        "original" : {
+          "type" : "object",
+          "description" : "Original occurrence properties",
+          "readOnly" : true,
+          "additionalProperties" : {
+            "type" : "object"
+          }
+        },
+        "updated" : {
+          "type" : "object",
+          "description" : "Updated occurrence properties",
+          "readOnly" : true,
+          "additionalProperties" : {
+            "type" : "object"
+          }
+        }
+      },
+      "description" : "The report delivered back from a sensitivty query"
+    },
+    "SensitivityZone" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "The zone identifier",
+          "readOnly" : true
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "The name of the zone.",
+          "readOnly" : true
+        },
+        "layerId" : {
+          "type" : "string",
+          "description" : "The geospatial layer associated with this zone",
+          "readOnly" : true
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "The type of zone",
+          "readOnly" : true,
+          "enum" : [ "COUNTRY", "STATE", "EXTERNAL_TERRITORY", "QUARANTINE_ZONE" ]
+        }
+      },
+      "description" : "A geographical zone, giving boundaries to sensitivity declarations."
+    },
+    "TransientEvent" : {
+      "type" : "object",
+      "required" : [ "eventDate" ],
+      "properties" : {
+        "eventDate" : {
+          "type" : "string",
+          "format" : "date-time",
+          "description" : "The date the event occurred",
+          "readOnly" : true
+        },
+        "zone" : {
+          "description" : "The zone that this event occurred in.",
+          "readOnly" : true,
+          "$ref" : "#/definitions/SensitivityZone"
+        }
+      },
+      "description" : "A transient event in a particular zone."
+    },
+    "ValidationReport" : {
+      "type" : "object",
+      "properties" : {
+        "taxon" : {
+          "description" : "The taxon that this report has been applied to.",
+          "readOnly" : true,
+          "$ref" : "#/definitions/SensitiveTaxon"
+        },
+        "messages" : {
+          "type" : "array",
+          "description" : "A list of messages that apply to this report",
+          "readOnly" : true,
+          "items" : {
+            "$ref" : "#/definitions/Message"
+          }
+        },
+        "category" : {
+          "type" : "string",
+          "description" : "The general category of the report",
+          "readOnly" : true
+        },
+        "assertion" : {
+          "type" : "string",
+          "description" : "A description of what has been discovered about the occurrence",
+          "readOnly" : true
+        }
+      },
+      "description" : "Information about what has been found in terms of sensitivity."
+    },
+    "ProcessQuery" : {
+      "type" : "object",
+      "properties" : {
+        "scientificName" : {
+          "type" : "string",
+          "example" : "Eucalyptus rossii",
+          "description" : "The scientific name",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/scientificName"
+          }
+        },
+        "taxonId" : {
+          "type" : "string",
+          "example" : "https://id.biodiversity.org.au/node/apni/2900822",
+          "description" : "The taxon identifier",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/taxonID"
+          }
+        },
+        "dataResourceUid" : {
+          "type" : "string",
+          "example" : "dr1329",
+          "description" : "The data resource identifier",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/datasetID"
+          }
+        },
+        "stateProvince" : {
+          "type" : "string",
+          "example" : "New South Wales",
+          "description" : "The state or province name",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/stateProvince"
+          }
+        },
+        "country" : {
+          "type" : "string",
+          "example" : "Australia",
+          "description" : "The country name",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/country"
+          }
+        },
+        "zones" : {
+          "type" : "array",
+          "example" : "FFEZ",
+          "description" : "The zone identifiers that cover the occurrence record location",
+          "readOnly" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "properties" : {
+          "type" : "object",
+          "description" : "The occurrence record properties",
+          "readOnly" : true,
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        }
+      },
+      "description" : "The basic information needed to process an occurrence record, including taxon, broad location and source. Additional information from the occurrence record is supplied as a set of properties, keyed by URI, prefixed name or field name -- the non-namespace part of a Darwin Core URI. The result from the query may choose to process the values to meet the sensitivity rules."
+    },
+    "SensitivityQuery" : {
+      "type" : "object",
+      "properties" : {
+        "scientificName" : {
+          "type" : "string",
+          "example" : "Eucalyptus rossii",
+          "description" : "The scientific name",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/scientificName"
+          }
+        },
+        "taxonId" : {
+          "type" : "string",
+          "example" : "https://id.biodiversity.org.au/node/apni/2900822",
+          "description" : "The taxon identifier",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/taxonID"
+          }
+        },
+        "dataResourceUid" : {
+          "type" : "string",
+          "example" : "dr1329",
+          "description" : "The data resource identifier",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/datasetID"
+          }
+        },
+        "stateProvince" : {
+          "type" : "string",
+          "example" : "New South Wales",
+          "description" : "The state or province name",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/stateProvince"
+          }
+        },
+        "country" : {
+          "type" : "string",
+          "example" : "Australia",
+          "description" : "The country name",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/country"
+          }
+        },
+        "zones" : {
+          "type" : "array",
+          "example" : "FFEZ",
+          "description" : "The zone identifiers that cover the occurrence record location",
+          "readOnly" : true,
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "description" : "The basic information needed to process an occurrence record, including taxon, broad location and source. "
+    },
+    "ClearGeneralisation" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Generalisation"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "field" : {
+            "readOnly" : true,
+            "$ref" : "#/definitions/FieldAccessor"
+          }
+        },
+        "description" : "Clear a field, if it has a value"
+      } ]
+    },
+    "FieldAccessor" : {
+      "type" : "object",
+      "properties" : {
+        "field" : {
+          "$ref" : "#/definitions/Term"
+        }
+      }
+    },
+    "Generalisation" : {
+      "type" : "object",
+      "discriminator" : "action",
+      "description" : "A description of a generalisation that can be applied to parts of the occurrence record. Each generalisation type is given by the 'action' property, which corresponds to a class of actions that can be used for generalisation."
+    },
+    "LatLongGeneralisation" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Generalisation"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "latitudeField" : {
+            "readOnly" : true,
+            "$ref" : "#/definitions/FieldAccessor"
+          },
+          "longitudeField" : {
+            "readOnly" : true,
+            "$ref" : "#/definitions/FieldAccessor"
+          }
+        },
+        "description" : "Generalise a latitude/longitude accordinng to the accuracy specified in a sensitivity instance."
+      } ]
+    },
+    "MessageGeneralisation" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Generalisation"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "field" : {
+            "readOnly" : true,
+            "$ref" : "#/definitions/FieldAccessor"
+          },
+          "message" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "append" : {
+            "type" : "boolean",
+            "readOnly" : true
+          },
+          "trigger" : {
+            "type" : "string",
+            "readOnly" : true,
+            "enum" : [ "ANY", "GENERALISE", "WITHHOLD" ]
+          }
+        },
+        "description" : "Set or append a message to a text field."
+      } ]
+    },
+    "RetainGeneralisation" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Generalisation"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "field" : {
+            "readOnly" : true,
+            "$ref" : "#/definitions/FieldAccessor"
+          }
+        },
+        "description" : "Retain a field, keeping its original value."
+      } ]
+    },
+    "Term" : {
+      "type" : "object",
+      "properties" : {
+        "class" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "SpeciesCheck" : {
+      "type" : "object",
+      "properties" : {
+        "scientificName" : {
+          "type" : "string",
+          "example" : "Eucalyptus rossii",
+          "description" : "The scientific name",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/scientificName"
+          }
+        },
+        "taxonId" : {
+          "type" : "string",
+          "example" : "https://id.biodiversity.org.au/node/apni/2900822",
+          "description" : "The taxon identifier",
+          "readOnly" : true,
+          "x-reference" : {
+            "uri" : "http://rs.tdwg.org/dwc/terms/taxonID"
+          }
+        }
+      },
+      "description" : "Request to see if a species is potentially sensitive. Information on a potential species match, both name and, if available, the taxon identifier"
+    }
+  }
+}
