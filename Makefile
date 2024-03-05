@@ -3,7 +3,7 @@ run:
 
 # TODO: biocache is fetched from ALA
 update-specs:
-	curl -sS --max-time 30 --retry 1 "https://biocache.ala.org.au/ws/v3/api-docs" --output src/specs/records
+	curl -sS --max-time 30 --retry 1 "https://records.biodiversitydata.se/ws/v3/api-docs" --output src/specs/records
 	curl -sS --max-time 30 --retry 1 "https://spatial.biodiversitydata.se/ws/openapi/openapi" --output src/specs/spatial
 	curl -sS --max-time 30 --retry 1 "https://species.biodiversitydata.se/ws/openapi/openapi" --output src/specs/species
 	curl -sS --max-time 30 --retry 1 "https://lists.biodiversitydata.se/openapi/openapi" --output src/specs/lists
