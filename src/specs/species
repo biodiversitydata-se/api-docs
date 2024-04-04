@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Species REST services
-  description: REST services for interacting with the BIE webapp
+  title: BIE REST services
+  description: REST services for interacting with the BIE
   termsOfService: https://docs.biodiversitydata.se/sbdi-data/sbdi-atlas-terms-of-use/
   contact:
     name: ""
@@ -9,7 +9,7 @@ info:
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
-  version: 3.0.0
+  version: 3.1.0
 servers:
 - url: https://species.biodiversitydata.se/ws
 paths:
@@ -31,17 +31,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
       security:
       - openIdConnect: []
   /api/services/status/{id}:
@@ -67,19 +67,69 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
       security:
       - openIdConnect: []
+  /indexFields:
+    get:
+      tags:
+      - fields
+      summary: Gets the list of indexed fields
+      operationId: fields
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+  /ranks:
+    get:
+      tags:
+      - rank
+      summary: Gets a description of the ranks used to classify levels of taxa
+      operationId: ranks
+      responses:
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
   /api/setImages:
     get:
       tags:
@@ -118,22 +168,23 @@ paths:
           type: string
       responses:
         "200":
+          description: Success
           headers:
             Access-Control-Allow-Origin:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
       security:
       - openIdConnect: []
   /api/setUrl:
@@ -168,22 +219,23 @@ paths:
           type: string
       responses:
         "200":
+          description: Success
           headers:
             Access-Control-Allow-Origin:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
       security:
       - openIdConnect: []
   /search/auto:
@@ -230,17 +282,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
   /species/guids/bulklookup:
     post:
       tags:
@@ -267,17 +319,59 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
+  /species/image/bulk:
+    post:
+      tags:
+      - bulk
+      summary: Get a list of images for a list of taxon identifiers
+      description: Return a list of "hero shot" preferred image identifiers and links
+        for each taxon specified by the guid or null for no image
+      operationId: bulkImageLookup
+      requestBody:
+        description: The guids to look up
+        content:
+          '*/*':
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        "200":
+          description: An array of either nulls for not found or packages of image
+            information
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ImageResponse'
   /childConcepts/{id}:
     get:
       tags:
@@ -319,17 +413,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
   /classification/{id}:
     get:
       tags:
@@ -359,17 +453,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
   /download:
     get:
       tags:
@@ -415,17 +509,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
   /guid/batch:
     get:
       tags:
@@ -457,17 +551,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
   /guid/{name}:
     get:
       tags:
@@ -492,17 +586,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
   /imageSearch/{id}:
     get:
       tags:
@@ -550,17 +644,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
   /search:
     get:
       tags:
@@ -627,17 +721,56 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
+  /species/shortProfile/{id}:
+    get:
+      tags:
+      - Search
+      summary: Get a short description of a taxon
+      description: "Get a summary of taxon data without details such as variants,\
+        \ additional identifiers, etc."
+      operationId: shortProfile
+      parameters:
+      - name: id
+        in: path
+        description: The guid for the taxon concept
+        required: true
+        schema:
+          type: string
+        example: https://id.biodiversity.org.au/node/apni/2905748
+      responses:
+        "200":
+          description: Species info in JSON
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShortProfile'
   /species/lookup/bulk:
     post:
       tags:
@@ -673,17 +806,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
   /species/{id}:
     get:
       tags:
@@ -707,20 +840,68 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
 components:
+  schemas:
+    ImageResponse:
+      type: object
+      properties:
+        imageId:
+          type: string
+        thumbnail:
+          type: string
+        small:
+          type: string
+        large:
+          type: string
+    ShortProfile:
+      type: object
+      properties:
+        taxonID:
+          type: string
+        scientificName:
+          type: string
+        scientificNameAuthorship:
+          type: string
+        author:
+          type: string
+        rank:
+          type: string
+        rankID:
+          type: string
+        kingdom:
+          type: string
+        family:
+          type: string
+        commonName:
+          type: string
+        thumbnail:
+          type: string
+        imageURL:
+          type: string
   securitySchemes:
-    sessionCookie:
-      type: apiKey
-      name: jsessionid
-      in: cookie
+    openIdConnect:
+      type: openIdConnect
+      openIdConnectUrl: https://auth.biodiversitydata.se/cas/oidc/.well-known
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc/authorize
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes: {}

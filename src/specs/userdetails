@@ -464,7 +464,23 @@ components:
             type: integer
             format: int64
   securitySchemes:
-    sessionCookie:
-      type: apiKey
-      name: jsessionid
-      in: cookie
+    openIdConnect:
+      type: openIdConnect
+      openIdConnectUrl: https://auth.biodiversitydata.se/cas/oidc/.well-known
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc/authorize
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes:
+            users/read: Read or list any or all user records
+            users/write: "Write to a user's record, eg update a user's attributes."
+        authorizationCode:
+          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc/authorize
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes:
+            users/read: Read or list any or all user records
+            users/write: "Write to a user's record, eg update a user's attributes."

@@ -908,7 +908,13 @@ components:
           items:
             type: string
   securitySchemes:
-    sessionCookie:
-      type: apiKey
-      name: jsessionid
-      in: cookie
+    openIdConnect:
+      type: openIdConnect
+      openIdConnectUrl: https://auth.biodiversitydata.se/cas/oidc/.well-known
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          scopes: {}
+        authorizationCode:
+          scopes: {}

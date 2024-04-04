@@ -470,7 +470,19 @@ components:
         centroid:
           type: string
   securitySchemes:
-    sessionCookie:
-      type: apiKey
-      name: jsessionid
-      in: cookie
+    openIdConnect:
+      type: openIdConnect
+      openIdConnectUrl: https://auth-test.ala.org.au/cas/oidc/.well-known
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc/authorize
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc/authorize
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes: {}

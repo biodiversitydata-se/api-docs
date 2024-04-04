@@ -300,7 +300,18 @@ components:
                 format: int32
           writeOnly: true
   securitySchemes:
-    sessionCookie:
-      type: apiKey
-      name: jsessionid
-      in: cookie
+    openIdConnect:
+      type: openIdConnect
+      openIdConnectUrl: https://auth.biodiversitydata.se/cas/oidc/.well-known
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc/authorize
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes: {}
