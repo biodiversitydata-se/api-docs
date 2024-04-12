@@ -953,10 +953,6 @@ components:
         lastUpdated:
           type: string
           format: date-time
-        institutionId:
-          type: object
-        providerMapId:
-          type: object
         listOfCollectionCodesForLookup:
           type: array
           items:
@@ -1041,6 +1037,10 @@ components:
           format: double
         focus:
           type: string
+        institutionId:
+          type: object
+        providerMapId:
+          type: object
     Contact:
       type: object
       properties:
@@ -1530,8 +1530,6 @@ components:
         lastUpdated:
           type: string
           format: date-time
-        institutionId:
-          type: object
         attributionList:
           type: array
           items:
@@ -1596,6 +1594,8 @@ components:
           format: double
         focus:
           type: string
+        institutionId:
+          type: object
         verified:
           type: boolean
         creativeCommons:
