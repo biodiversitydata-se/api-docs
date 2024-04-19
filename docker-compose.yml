@@ -3,8 +3,10 @@
 services:
 
   web:
-    image: nginx
+    image: nginx:1.25
+    environment:
+      - TZ=Europe/Stockholm
     ports:
       - 8088:80
     volumes:
-        - ./src:/usr/share/nginx/html
+      - ./src:/usr/share/nginx/html
