@@ -1915,5 +1915,4 @@ components:
         clientCredentials:
           scopes: {}
         authorizationCode:
-          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc
           scopes: {}
