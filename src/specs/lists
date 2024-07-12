@@ -27,8 +27,8 @@ paths:
         schema:
           type: string
       requestBody:
-        description: "The JSON object containing new species list item guid, rawScientificName\
-          \ and extra fields and values."
+        description: The JSON object containing rawScientificName and extra fields
+          and values.
         content:
           application/json:
             schema:
@@ -41,7 +41,7 @@ paths:
             '*/*':
               schema:
                 type: object
-  /webService/deleteItem:
+  /ws/deleteItem:
     get:
       tags:
       - deleteSpeciesListItem
@@ -757,14 +757,14 @@ components:
     SpeciesListItemBody:
       type: object
       properties:
-        guid:
-          type: string
         rawScientificName:
           type: string
-        extra:
-          type: object
-          additionalProperties:
-            type: string
+        additionalProp1:
+          type: string
+        additionalProp2:
+          type: string
+        additionalProp3:
+          type: string
     FilterListsBody:
       type: object
       properties:
