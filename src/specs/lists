@@ -9,13 +9,14 @@ info:
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
+  version: 5.2.3
 servers:
 - url: https://lists.biodiversitydata.se
 paths:
   /ws/createItem:
     post:
       tags:
-      - createSpeciesListItem
+      - List Items
       summary: Create a species list item for a species list
       description: Create a species list item for a species list
       operationId: Create a species list item for a species list
@@ -35,16 +36,31 @@ paths:
               $ref: '#/components/schemas/SpeciesListItemBody'
         required: true
       responses:
-        default:
-          description: default response
-          content:
-            '*/*':
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
               schema:
-                type: object
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+      security:
+      - openIdConnect:
+        - ala/internal
   /ws/deleteItem:
     get:
       tags:
-      - deleteSpeciesListItem
+      - List Items
       summary: Delete a species list item for a species list
       description: Delete a species list item for a species list
       operationId: Delete a species list item for a species list
@@ -62,12 +78,27 @@ paths:
         schema:
           type: string
       responses:
-        default:
-          description: default response
-          content:
-            '*/*':
+        "200":
+          description: Success
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
               schema:
-                type: object
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+      security:
+      - openIdConnect:
+        - ala/internal
   /ws/speciesList/filter:
     post:
       tags:
@@ -91,17 +122,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -132,17 +163,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -164,17 +195,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             '*/*':
               schema:
@@ -202,24 +233,138 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: string
-  /ws/speciesList/{druid}?:
+  /ws/speciesList/{druid}:
+    get:
+      tags:
+      - Lists
+      summary: Get species list detail
+      description: Get details of a specific list
+      operationId: Get species list detail
+      parameters:
+      - name: druid
+        in: path
+        description: 'The data resource id to identify a list. This parameter is required
+          for requesting a species list but optional for requesting species lists '
+        required: true
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: The field  on which to sort the returned results
+        schema:
+          type: string
+      - name: max
+        in: query
+        description: The number of records to return
+        schema:
+          type: integer
+          format: int32
+      - name: offset
+        in: query
+        description: "The records offset, to enable paging"
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Species List(s)
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetListsResponse'
+    post:
+      tags:
+      - Lists
+      summary: Add  or replace a species list
+      description: "Add new species list or replace an existing one. When no druid\
+        \ is provided in the JSON body, a new list will be created. Providing a druid\
+        \ in the path will attempt to update and existing list"
+      operationId: Add or replace a species list_3
+      parameters:
+      - name: druid
+        in: path
+        description: The data resource id to identify an existing list
+        required: true
+        schema:
+          type: string
+      - name: X-ALA-userId
+        in: header
+        description: The user id to save the list against
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: "The JSON object containing new species list. Two JSON structures\
+          \ are supported: - v1 (unstructured list items): {\"listName\": \"list1\"\
+          ,  \"listType\": \"TEST\", \"listItems\": \"item1,item2,item3\"}, \n- v2\
+          \ (structured list items with KVP): { \"listName\": \"list1\", \"listType\"\
+          : \"TEST\", \"listItems\": [ { \"itemName\": \"item1\", \"kvpValues\": [\
+          \ { \"key\": \"key1\", \"value\": \"value1\" }, { \"key\": \"key2\", \"\
+          value\": \"value2\" } ] } ] }"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterListsBody'
+        required: true
+      responses:
+        "201":
+          description: List of druid which match the supplied filter
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveListResponse'
+      security:
+      - openIdConnect: []
+  /ws/speciesListInternal/{druid}:
     get:
       tags:
       - Lists
@@ -259,21 +404,24 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetListsResponse'
+      security:
+      - openIdConnect:
+        - ala/internal
   /ws/speciesListItems/{druid}:
     get:
       tags:
@@ -335,23 +483,104 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetListItemsResponse'
+  /ws/speciesListItemsInternal/{druid}:
+    get:
+      tags:
+      - List Items
+      summary: Get species list(s) item details
+      description: Get details of individual items i.e. species for specified species
+        list(s)
+      operationId: Get species list(s) item details_1
+      parameters:
+      - name: druid
+        in: path
+        description: "The data resource id or comma separated data resource ids  to\
+          \ identify list(s) to return list items for e.g. '/ws/speciesListItems/dr123,dr781,dr332'"
+        required: true
+        schema:
+          type: string
+      - name: q
+        in: query
+        description: "Optional query string to search common name, supplied name and\
+          \ scientific name in the lists specified by the 'druid' e.g. 'Eurystomus\
+          \ orientalis'"
+        schema:
+          type: string
+      - name: nonulls
+        in: query
+        description: The value to specify whether to include or exclude species list
+          item with null value for species guid
+        schema:
+          type: boolean
+      - name: sort
+        in: query
+        description: The field  on which to sort the returned results. Default is
+          'itemOrder'
+        schema:
+          type: string
+      - name: max
+        in: query
+        description: The number of records to return
+        schema:
+          type: integer
+          format: int32
+      - name: offset
+        in: query
+        description: "The records offset, to enable paging"
+        schema:
+          type: integer
+          format: int32
+      - name: includeKVP
+        in: query
+        description: 'The value to specify whether to include KVP (key value pairs)
+          values in the returned list item '
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: Species list item(s)
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetListItemsResponse'
+      security:
+      - openIdConnect:
+        - ala/internal
   /ws/species/{guid}:
     get:
       tags:
@@ -387,17 +616,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -427,17 +656,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -467,17 +696,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -513,17 +742,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -551,17 +780,17 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
@@ -591,21 +820,244 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             text/html:
               schema:
                 type: string
+  /ws/speciesList:
+    get:
+      tags:
+      - Lists
+      summary: Get species list detail
+      description: Get details of species lists
+      operationId: Get species list detail_1
+      parameters:
+      - name: sort
+        in: query
+        description: The field  on which to sort the returned results
+        schema:
+          type: string
+      - name: max
+        in: query
+        description: The number of records to return
+        schema:
+          type: integer
+          format: int32
+      - name: offset
+        in: query
+        description: "The records offset, to enable paging"
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Species List(s)
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetListsResponse'
+    post:
+      tags:
+      - Lists
+      summary: Add  or replace a species list
+      description: "Add new species list or replace an existing one. When no druid\
+        \ is provided in the JSON body, a new list will be created. Providing a druid\
+        \ in the path will attempt to update and existing list"
+      operationId: Add or replace a species list
+      parameters:
+      - name: X-ALA-userId
+        in: header
+        description: The user id to save the list against
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: "The JSON object containing new species list. Two JSON structures\
+          \ are supported: - v1 (unstructured list items): {\"listName\": \"list1\"\
+          ,  \"listType\": \"TEST\", \"listItems\": \"item1,item2,item3\"}, \n- v2\
+          \ (structured list items with KVP): { \"listName\": \"list1\", \"listType\"\
+          : \"TEST\", \"listItems\": [ { \"itemName\": \"item1\", \"kvpValues\": [\
+          \ { \"key\": \"key1\", \"value\": \"value1\" }, { \"key\": \"key2\", \"\
+          value\": \"value2\" } ] } ] }"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterListsBody'
+        required: true
+      responses:
+        "201":
+          description: List of druid which match the supplied filter
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveListResponse'
+      security:
+      - openIdConnect: []
+  /ws/speciesListPost/{druid}:
+    post:
+      tags:
+      - Lists
+      summary: Add  or replace a species list
+      description: "Add new species list or replace an existing one. When no druid\
+        \ is provided in the JSON body, a new list will be created. Providing a druid\
+        \ in the path will attempt to update and existing list"
+      operationId: Add or replace a species list_1
+      parameters:
+      - name: druid
+        in: path
+        description: The data resource id to identify an existing list
+        required: true
+        schema:
+          type: string
+      - name: X-ALA-userId
+        in: header
+        description: The user id to save the list against
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: "The JSON object containing new species list. Two JSON structures\
+          \ are supported: - v1 (unstructured list items): {\"listName\": \"list1\"\
+          ,  \"listType\": \"TEST\", \"listItems\": \"item1,item2,item3\"}, \n- v2\
+          \ (structured list items with KVP): { \"listName\": \"list1\", \"listType\"\
+          : \"TEST\", \"listItems\": [ { \"itemName\": \"item1\", \"kvpValues\": [\
+          \ { \"key\": \"key1\", \"value\": \"value1\" }, { \"key\": \"key2\", \"\
+          value\": \"value2\" } ] } ] }"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterListsBody'
+        required: true
+      responses:
+        "201":
+          description: List of druid which match the supplied filter
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveListResponse'
+      deprecated: true
+      security:
+      - openIdConnect: []
+  /ws/speciesListPost:
+    post:
+      tags:
+      - Lists
+      summary: Add  or replace a species list
+      description: "Add new species list or replace an existing one. When no druid\
+        \ is provided in the JSON body, a new list will be created. Providing a druid\
+        \ in the path will attempt to update and existing list"
+      operationId: Add or replace a species list_2
+      parameters:
+      - name: druid
+        in: path
+        description: The data resource id to identify an existing list
+        required: true
+        schema:
+          type: string
+      - name: X-ALA-userId
+        in: header
+        description: The user id to save the list against
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: "The JSON object containing new species list. Two JSON structures\
+          \ are supported: - v1 (unstructured list items): {\"listName\": \"list1\"\
+          ,  \"listType\": \"TEST\", \"listItems\": \"item1,item2,item3\"}, \n- v2\
+          \ (structured list items with KVP): { \"listName\": \"list1\", \"listType\"\
+          : \"TEST\", \"listItems\": [ { \"itemName\": \"item1\", \"kvpValues\": [\
+          \ { \"key\": \"key1\", \"value\": \"value1\" }, { \"key\": \"key2\", \"\
+          value\": \"value2\" } ] } ] }"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterListsBody'
+        required: true
+      responses:
+        "201":
+          description: List of druid which match the supplied filter
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveListResponse'
+      deprecated: true
+      security:
+      - openIdConnect: []
   /ws/queryListItemOrKVP:
     get:
       tags:
@@ -613,7 +1065,7 @@ paths:
       summary: Get species list(s) item details
       description: Get details of individual items i.e. species for specified species
         list(s) filter-able by specified fields
-      operationId: Get species list(s) item details_1
+      operationId: Get species list(s) item details_2
       parameters:
       - name: druid
         in: query
@@ -675,83 +1127,23 @@ paths:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Methods:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
             Access-Control-Allow-Headers:
               description: CORS header
               style: simple
               schema:
-                type: String
+                type: string
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetListItemsResponse'
-  /ws/speciesListPost/{druid}?:
-    post:
-      tags:
-      - Lists
-      summary: Add  or replace a species list
-      description: "Add new species list or replace an existing one. When no druid\
-        \ is provided in the JSON body, a new list will be created. Providing a druid\
-        \ in the path will attempt to update and existing list"
-      operationId: Add or replace a species list
-      parameters:
-      - name: druid
-        in: path
-        description: The data resource id to identify an existing list
-        required: true
-        schema:
-          type: string
-      - name: X-ALA-userId
-        in: header
-        description: The user id to save the list against
-        required: true
-        schema:
-          type: string
-      requestBody:
-        description: "The JSON object containing new species list. Two JSON structures\
-          \ are supported: - v1 (unstructured list items): {\"listName\": \"list1\"\
-          ,  \"listType\": \"TEST\", \"listItems\": \"item1,item2,item3\"}, \n- v2\
-          \ (structured list items with KVP): { \"listName\": \"list1\", \"listType\"\
-          : \"TEST\", \"listItems\": [ { \"itemName\": \"item1\", \"kvpValues\": [\
-          \ { \"key\": \"key1\", \"value\": \"value1\" }, { \"key\": \"key2\", \"\
-          value\": \"value2\" } ] } ] }"
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FilterListsBody'
-        required: true
-      responses:
-        "201":
-          description: List of druid which match the supplied filter
-          headers:
-            Access-Control-Allow-Origin:
-              description: CORS header
-              style: simple
-              schema:
-                type: String
-            Access-Control-Allow-Methods:
-              description: CORS header
-              style: simple
-              schema:
-                type: String
-            Access-Control-Allow-Headers:
-              description: CORS header
-              style: simple
-              schema:
-                type: String
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SaveListResponse'
-      security:
-      - openIdConnect: []
 components:
   schemas:
     SpeciesListItemBody:
@@ -915,6 +1307,11 @@ components:
       type: oauth2
       flows:
         clientCredentials:
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
           scopes: {}
         authorizationCode:
+          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc/authorize
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
           scopes: {}
