@@ -1,7 +1,6 @@
 run:
 	docker compose up --detach
 
-# TODO: biocache is fetched from ALA
 update-specs:
 	curl -sS --max-time 30 --retry 1 "https://records.biodiversitydata.se/ws/v3/api-docs" --output src/specs/records
 	curl -sS --max-time 30 --retry 1 "https://spatial.biodiversitydata.se/ws/openapi/openapi" --output src/specs/spatial
