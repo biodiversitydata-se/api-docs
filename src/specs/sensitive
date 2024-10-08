@@ -225,48 +225,6 @@
         }
       }
     },
-    "/ws/categories" : {
-      "get" : {
-        "tags" : [ "Sensitive data information" ],
-        "summary" : "Get the sensitive data categories",
-        "description" : "Each category refers to a regulatory sensitivity category",
-        "operationId" : "getCategories",
-        "produces" : [ "application/json" ],
-        "parameters" : [ ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/SensitivityCategory"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/ws/species" : {
-      "get" : {
-        "tags" : [ "Sensitive data information" ],
-        "summary" : "Get the sensitive data species",
-        "description" : "The list of species that are sensitive, along with the specific zone/category sensitivity instances.",
-        "operationId" : "getSensitive",
-        "produces" : [ "application/json" ],
-        "parameters" : [ ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/SensitiveTaxon"
-              }
-            }
-          }
-        }
-      }
-    },
     "/ws/layers" : {
       "get" : {
         "tags" : [ "Sensitive data information" ],
@@ -303,6 +261,48 @@
               "type" : "array",
               "items" : {
                 "$ref" : "#/definitions/SensitivityZone"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ws/categories" : {
+      "get" : {
+        "tags" : [ "Sensitive data information" ],
+        "summary" : "Get the sensitive data categories",
+        "description" : "Each category refers to a regulatory sensitivity category",
+        "operationId" : "getCategories",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/SensitivityCategory"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ws/species" : {
+      "get" : {
+        "tags" : [ "Sensitive data information" ],
+        "summary" : "Get the sensitive data species",
+        "description" : "The list of species that are sensitive, along with the specific zone/category sensitivity instances.",
+        "operationId" : "getSensitive",
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/SensitiveTaxon"
               }
             }
           }

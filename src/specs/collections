@@ -1117,6 +1117,8 @@ components:
           format: int64
         label:
           type: string
+        validUri:
+          type: boolean
     Image:
       type: object
       properties:
