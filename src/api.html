@@ -6,7 +6,7 @@
   <meta name="description" content="Swedish Biodiversity Data Infrastructure web service API documentation" />
   <title>Web service API</title>
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
-  <link href="https://static.biodiversitydata.se/favicon.ico" rel="shortcut icon"  type="image/x-icon"/>
+  <link rel="icon" href="https://static.biodiversitydata.se/favicon.ico" type="image/x-icon"/>
   <style>
     .swagger-ui .topbar {
         background: #6691a4;
@@ -18,20 +18,22 @@
 
   <!-- Matomo -->
   <script type="text/javascript">
-    var _paq = window._paq = window._paq || [];
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-    _paq.push(["setCookieDomain", "*.biodiversitydata.se"]);
-    _paq.push(["setDomains", ["*.biodiversitydata.se","*.bioatlas.se","*.sbdi.se"]]);
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-      var u="//matomo.biodiversitydata.se/";
-      _paq.push(['setTrackerUrl', u+'matomo.php']);
-      _paq.push(['setSiteId', '5']);
-      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-      g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
+    if (window.location.hostname !== "localhost") {
+      var _paq = window._paq = window._paq || [];
+      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+      _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+      _paq.push(["setCookieDomain", "*.biodiversitydata.se"]);
+      _paq.push(["setDomains", ["*.biodiversitydata.se","*.bioatlas.se","*.sbdi.se"]]);
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//matomo.biodiversitydata.se/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '5']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    }
   </script>
   <!-- End Matomo Code -->
 </head>
