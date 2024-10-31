@@ -2683,6 +2683,96 @@ paths:
       security:
       - openIdConnect:
         - image-service/write
+  /ws/scheduleTileGenerationWS/{id}:
+    post:
+      tags:
+      - JSON services for accessing and updating metadata
+      summary: Schedule tile generation
+      description: "Schedule tile generation. Required scopes: 'image-service/write'."
+      operationId: scheduleTileGenerationWS
+      parameters:
+      - name: id
+        in: path
+        description: Image Id
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: string
+        "405":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+        "404":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+        "403":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+      security:
+      - openIdConnect:
+        - image-service/write
   /ws/scheduleUploadFromUrls:
     post:
       tags:
