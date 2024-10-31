@@ -3,7 +3,7 @@
 services:
 
   web:
-    image: nginx:1.25
+    image: nginx:1.26
     environment:
       - TZ=Europe/Stockholm
     ports:

@@ -1,0 +1,762 @@
+openapi: 3.0.1
+info:
+  title: Data Quality Filter REST services
+  description: REST services for interacting with the data-quality-filter-service
+    webapp
+  termsOfService: https://docs.biodiversitydata.se/sbdi-data/sbdi-atlas-terms-of-use/
+  contact:
+    name: Support
+    email: ""
+  license:
+    name: Mozilla Public License 1.1
+    url: https://www.mozilla.org/en-US/MPL/1.1/
+  version: 2.0.0
+servers:
+- url: https://data-quality-service.biodiversitydata.se
+paths:
+  /api/v1/data-profiles/{profileId}/categories:
+    get:
+      tags:
+      - Categories
+      summary: List all quality categories from a profile
+      description: List all available data quality categories for a specified quality
+        profile
+      operationId: getQualityCategories
+      parameters:
+      - name: profileId
+        in: path
+        description: The id or short name for the quality profile or default for the
+          default profile
+        required: true
+        schema:
+          type: string
+        example: ALA
+      responses:
+        "200":
+          description: List of quality categories
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QualityCategory'
+  /api/v1/data-profiles/{profileId}/categories/{categoryId}:
+    get:
+      tags:
+      - Categories
+      summary: Retrieve a single quality category form a profile
+      description: Retrieve a single quality category for a specified quality category
+        id
+      operationId: getQualityCategory
+      parameters:
+      - name: profileId
+        in: path
+        description: The id or short name for the quality profile or default for the
+          default profile
+        required: true
+        schema:
+          type: string
+        example: ALA
+      - name: categoryId
+        in: path
+        description: The id for the quality category
+        required: true
+        schema:
+          type: string
+        example: 442
+      responses:
+        "200":
+          description: A quality category
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QualityProfile'
+  /api/v1/quality/activeProfile:
+    get:
+      tags:
+      - Profiles
+      summary: Retrieve the data profile for a given profile's short name
+      description: Retrieve the data profile for a given profile's short name.  If
+        the profile doesn't exist or the short name is omitted then the default profile
+        is returned instead.
+      operationId: activeProfile_1
+      parameters:
+      - name: profileName
+        in: query
+        description: Profile name
+        schema:
+          type: string
+        example: ALA
+      requestBody:
+        content: {}
+      responses:
+        "200":
+          description: Data profile
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QualityProfile'
+  /api/v1/quality/findAllEnabledCategories:
+    get:
+      tags:
+      - Categories
+      summary: Find All Enabled Categories
+      description: Find All Enabled Categories for a specified profile
+      operationId: findAllEnabledCategories_1
+      parameters:
+      - name: profileName
+        in: query
+        description: Profile name
+        schema:
+          type: string
+        example: ALA General
+      requestBody:
+        content: {}
+      responses:
+        "200":
+          description: All enabled Categories
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QualityCategory'
+  /api/v1/quality/getAllInverseCategoryFiltersForProfile:
+    get:
+      tags:
+      - Profiles
+      summary: Get all the inverse filter strings for a given data profile
+      description: Get all the inverse filter strings for a given data profile. Results
+        for the default profile will be returned if qualityProfileId is omitted
+      operationId: getAllInverseCategoryFiltersForProfile
+      parameters:
+      - name: qualityProfileId
+        in: query
+        description: Quality Profile Id
+        schema:
+          type: string
+        example: 441
+      responses:
+        "200":
+          description: Full inverse filter string
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/v1/quality/getEnabledFiltersByLabel:
+    get:
+      tags:
+      - Filters
+      summary: "Get enabled filters, grouped by category label for a given profile\
+        \ name"
+      description: "Get enabled filters, grouped by category label for a given profile\
+        \ name"
+      operationId: getEnabledFiltersByLabel_1
+      parameters:
+      - name: profileName
+        in: query
+        description: Profile name
+        schema:
+          type: string
+        example: ALA General
+      requestBody:
+        content: {}
+      responses:
+        "200":
+          description: Enabled filters
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/quality/getEnabledQualityFilters:
+    get:
+      tags:
+      - Filters
+      summary: Get Enabled Quality Filters
+      description: Get Enabled Quality Filters
+      operationId: getEnabledQualityFilters_1
+      parameters:
+      - name: profileName
+        in: query
+        description: Profile name
+        schema:
+          type: string
+        example: ALA General
+      requestBody:
+        content: {}
+      responses:
+        "200":
+          description: Enabled filters
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/v1/quality/getGroupedEnabledFilters:
+    get:
+      tags:
+      - Filters
+      summary: Get Grouped Enabled Filters
+      description: Get Grouped Enabled Filters
+      operationId: getGroupedEnabledFilters_1
+      parameters:
+      - name: profileName
+        in: query
+        description: Profile name
+        schema:
+          type: string
+        example: ALA General
+      requestBody:
+        content: {}
+      responses:
+        "200":
+          description: Group enabled filters
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGroupedEnabledFiltersResponse'
+  /api/v1/quality/getInverseCategoryFilter:
+    get:
+      tags:
+      - Categories
+      summary: Get the full inverse filter string for a given quality category
+      description: Get the full inverse filter string for a given quality category.
+        Results for the default profile will be returned if qualityProfileId is omitted
+      operationId: getInverseCategoryFilter
+      parameters:
+      - name: qualityCategoryId
+        in: query
+        description: Quality Category Id
+        required: true
+        schema:
+          type: string
+        example: 441
+      responses:
+        "200":
+          description: Full inverse filter string
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/v1/quality/getJoinedQualityFilter:
+    get:
+      tags:
+      - Profiles
+      summary: Get the full filter string for a given data profile
+      description: Get the full filter string for a given data profile
+      operationId: getJoinedQualityFilter_1
+      parameters:
+      - name: profileName
+        in: query
+        description: Profile name
+        schema:
+          type: string
+        example: ALA
+      requestBody:
+        content: {}
+      responses:
+        "200":
+          description: Full filter string
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/v1/data-profiles/{profileId}/categories/{categoryId}/filters:
+    get:
+      tags:
+      - Filters
+      summary: List all quality filters from a category
+      description: List all quality filters for a specified quality profile and quality
+        category
+      operationId: getQualityFilters
+      parameters:
+      - name: profileId
+        in: path
+        description: The id or short name for the quality profile or default for the
+          default profile
+        required: true
+        schema:
+          type: string
+        example: ALA
+      - name: categoryId
+        in: path
+        description: The id for the quality category
+        required: true
+        schema:
+          type: string
+        example: 444
+      responses:
+        "200":
+          description: List of quality filters
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QualityFilter'
+  /api/v1/data-profiles/{profileId}/categories/{categoryId}/filters/{id}:
+    get:
+      tags:
+      - Filters
+      summary: Retrieve a single quality filter from a category
+      description: Retrieve a single quality filter for a specified quality filter
+        id
+      operationId: getQualityFilter
+      parameters:
+      - name: profileId
+        in: path
+        description: The id or short name for the quality profile or default for the
+          default profile
+        required: true
+        schema:
+          type: string
+        example: ALA
+      - name: categoryId
+        in: path
+        description: The id for the quality category
+        required: true
+        schema:
+          type: string
+        example: 444
+      - name: id
+        in: path
+        description: The id for the quality filter
+        required: true
+        schema:
+          type: string
+        example: 445
+      responses:
+        "200":
+          description: A quality filter
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QualityFilter'
+  /api/v1/data-profiles:
+    get:
+      tags:
+      - Profiles
+      summary: List all data quality profiles
+      description: List all available data quality profiles as per applied filters
+      operationId: getQualityProfiles
+      parameters:
+      - name: max
+        in: query
+        description: Maximum results to return
+        schema:
+          type: integer
+          format: int32
+        example: 2
+      - name: offset
+        in: query
+        description: Offset results by
+        schema:
+          type: integer
+          format: int32
+        example: 0
+      - name: sort
+        in: query
+        description: Property to sort results by
+        schema:
+          type: string
+        example: id
+      - name: order
+        in: query
+        description: Direction to sort results by
+        schema:
+          type: string
+        example: desc
+      - name: enabled
+        in: query
+        description: Only return enabled profiles
+        schema:
+          type: boolean
+        example: true
+      - name: name
+        in: query
+        description: Search for profiles by name
+        schema:
+          type: string
+        example: ALA General
+      - name: shortName
+        in: query
+        description: Search for profiles by short name
+        schema:
+          type: string
+        example: ALA
+      responses:
+        "200":
+          description: List of quality profiles
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QualityProfile'
+  /api/v1/data-profiles/{profileId}:
+    get:
+      tags:
+      - Profiles
+      summary: Retrieve a single quality profile
+      description: Retrieve a single quality profile based on the specified profile
+        id
+      operationId: getQualityProfile
+      parameters:
+      - name: profileId
+        in: path
+        description: The id or short name for the quality profile or default for the
+          default profile
+        required: true
+        schema:
+          type: string
+        example: 441
+      responses:
+        "200":
+          description: List of quality profiles
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QualityProfile'
+components:
+  schemas:
+    QualityCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        enabled:
+          type: boolean
+        name:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        displayOrder:
+          type: integer
+          format: int64
+        inverseFilter:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        qualityProfile:
+          $ref: '#/components/schemas/QualityProfile'
+        qualityFilters:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/QualityFilter'
+        qualityProfileId:
+          type: object
+    QualityFilter:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        enabled:
+          type: boolean
+        description:
+          type: string
+        filter:
+          type: string
+        displayOrder:
+          type: integer
+          format: int64
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        qualityCategory:
+          $ref: '#/components/schemas/QualityCategory'
+        qualityCategoryId:
+          type: object
+    QualityProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        shortName:
+          type: string
+        description:
+          type: string
+        contactName:
+          type: string
+        contactEmail:
+          type: string
+        enabled:
+          type: boolean
+        isDefault:
+          type: boolean
+        displayOrder:
+          type: integer
+          format: int64
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        categories:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/QualityCategory'
+    GetGroupedEnabledFiltersResponse:
+      type: object
+      properties:
+        empty:
+          type: boolean
+  securitySchemes:
+    openIdConnect:
+      type: openIdConnect
+      openIdConnectUrl: https://auth.biodiversitydata.se/cas/oidc/.well-known
+    oauth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: https://auth.biodiversitydata.se/cas/oidc/authorize
+          tokenUrl: https://auth.biodiversitydata.se/cas/oidc/token
+          refreshUrl: https://auth.biodiversitydata.se/cas/oidc/refresh
+          scopes: {}
+    jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

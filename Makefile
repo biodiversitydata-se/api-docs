@@ -7,6 +7,7 @@ update-specs:
 	curl -sS --max-time 30 --retry 1 "https://species.biodiversitydata.se/ws/openapi/openapi" --output src/specs/species
 	curl -sS --max-time 30 --retry 1 "https://lists.biodiversitydata.se/openapi/openapi" --output src/specs/lists
 	curl -sS --max-time 30 --retry 1 "https://collections.biodiversitydata.se/openapi/openapi" --output src/specs/collections
+	curl -sS --max-time 30 --retry 1 "https://data-quality-service.biodiversitydata.se/openapi/openapi" --output src/specs/data-quality
 	curl -sS --max-time 30 --retry 1 "https://images.biodiversitydata.se/openapi/openapi" --output src/specs/images
 	curl -sS --max-time 30 --retry 1 "https://logger.biodiversitydata.se/openapi/openapi" --output src/specs/logger
 	curl -sS --max-time 30 --retry 1 "https://auth.biodiversitydata.se/userdetails/openapi/openapi" --output src/specs/userdetails
