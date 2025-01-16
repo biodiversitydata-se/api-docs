@@ -9,7 +9,7 @@ info:
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
-  version: 5.2.3
+  version: 5.2.4
 servers:
 - url: https://lists.biodiversitydata.se
 paths:
