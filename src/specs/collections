@@ -997,6 +997,14 @@ components:
           $ref: '#/components/schemas/Address'
         keywords:
           type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         listOfCollectionCodesForLookup:
           type: array
           items:
@@ -1081,14 +1089,6 @@ components:
           format: double
         focus:
           type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
         institutionId:
           type: object
         providerMapId:
@@ -1215,6 +1215,14 @@ components:
           $ref: '#/components/schemas/Address'
         keywords:
           type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         alapartner:
           type: boolean
         attributionList:
@@ -1285,14 +1293,6 @@ components:
           format: double
         focus:
           type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
         linkedDataResources:
           type: array
           items:
@@ -1348,6 +1348,8 @@ components:
           type: string
         gbifCountryToAttribute:
           type: string
+        excludedDatasets:
+          type: string
         id:
           type: integer
           format: int64
@@ -1379,6 +1381,14 @@ components:
           $ref: '#/components/schemas/Address'
         keywords:
           type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         attributionList:
           type: array
           items:
@@ -1443,14 +1453,6 @@ components:
           format: double
         focus:
           type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
     DataResource:
       type: object
       properties:
@@ -1576,6 +1578,14 @@ components:
           $ref: '#/components/schemas/Address'
         keywords:
           type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         attributionList:
           type: array
           items:
@@ -1640,14 +1650,6 @@ components:
           format: double
         focus:
           type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
         institutionId:
           type: object
         verified:
@@ -1754,6 +1756,14 @@ components:
           $ref: '#/components/schemas/Address'
         keywords:
           type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         attributionList:
           type: array
           items:
@@ -1818,14 +1828,6 @@ components:
           format: double
         focus:
           type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
     Entity:
       type: object
       properties:

@@ -9,7 +9,7 @@ info:
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
-  version: 2.1.5
+  version: 2.2.0
 servers:
 - url: https://spatial.biodiversitydata.se/ws
 paths:
@@ -45,6 +45,16 @@ paths:
       - name: pid
         in: query
         description: Object ID to filter
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: Starting index for pagination
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Page size for pagination
         schema:
           type: string
       responses:
@@ -141,6 +151,16 @@ paths:
       - name: pid
         in: query
         description: Object ID to filter
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: Starting index for pagination
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Page size for pagination
         schema:
           type: string
       responses:
@@ -952,8 +972,8 @@ paths:
         example: "record,session,user"
       - name: admin
         in: query
-        description: "When true, return results for all users if request has a valid\
-          \ api_key or admin role."
+        description: "When true, return results for all users if request has an admin\
+          \ role."
         schema:
           type: string
         example: true
@@ -1184,6 +1204,73 @@ paths:
       responses:
         "200":
           description: Valid request
+  /sandbox/delete:
+    delete:
+      tags:
+      - uploads
+      summary: Delete a CSV or zipped CSV file containing occurrence points
+      operationId: deleteCSV
+      parameters:
+      - name: id
+        in: query
+        description: datasetId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Delete the file
+          content:
+            application/json: {}
+      security:
+      - openIdConnect: []
+  /sandbox/status:
+    get:
+      tags:
+      - uploads
+      summary: Get the status of a CSV or zipped CSV file containing occurrence points
+      operationId: statusCSV
+      parameters:
+      - name: id
+        in: query
+        description: datasetId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Status of the file
+          content:
+            application/json: {}
+      security:
+      - openIdConnect: []
+  /sandbox/upload:
+    post:
+      tags:
+      - uploads
+      summary: Upload a CSV or zipped CSV file containing occurrence points
+      operationId: uploadCSV
+      parameters:
+      - name: name
+        in: query
+        description: datasetName
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Uploaded CSV or zipped CSV file
+        content:
+          application/zip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: Recognised header and a dataResourceUid
+          content:
+            application/json: {}
+      security:
+      - openIdConnect: []
   /search:
     get:
       tags:
@@ -1583,7 +1670,7 @@ paths:
     post:
       tags:
       - tasks
-      summary: Create a task
+      summary: Create a task with JSON body or query parameters
       operationId: create
       parameters:
       - name: name
@@ -1655,6 +1742,16 @@ paths:
       - name: pid
         in: query
         description: Object ID to filter
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: Starting index for pagination
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Page size for pagination
         schema:
           type: string
       responses:

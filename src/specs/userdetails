@@ -387,9 +387,9 @@ components:
         id:
           type: integer
           format: int64
-        roleId:
-          type: object
         userId:
+          type: object
+        roleId:
           type: object
     UserDetails:
       type: object
