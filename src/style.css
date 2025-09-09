@@ -63,24 +63,26 @@ header .banner {
 header .banner img {
     margin-right: 1.0rem;
     max-width: 120px;
+    width: 120px
 }
 header .banner div {
     align-self: flex-end;
     font-weight: 400;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     color: #686868;
 }
 header .topbar {
-    height: 2.5rem;
+    height: 2.75rem;
     background-color: #6691a4;
 }
 
 footer {
-    height: 5rem;
+    height: 4.2rem;
     margin-top: 2.0rem;
-    background-color: #004767;
+    background-color: #284966;
     color: #ffffff;
+    font-size: 0.9rem;
 }
 footer .copyright {
-    padding-top: 1.8rem;
+    padding-top: 1.6rem;
 }
