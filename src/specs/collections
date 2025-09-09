@@ -995,16 +995,10 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
-        keywords:
-          type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
+        institutionId:
+          type: object
+        providerMapId:
+          type: object
         listOfCollectionCodesForLookup:
           type: array
           items:
@@ -1042,6 +1036,8 @@ components:
         networkMembership:
           type: string
         attributions:
+          type: string
+        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1089,10 +1085,14 @@ components:
           format: double
         focus:
           type: string
-        institutionId:
-          type: object
-        providerMapId:
-          type: object
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        uid:
+          type: string
     Contact:
       type: object
       properties:
@@ -1213,16 +1213,6 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
-        keywords:
-          type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
         alapartner:
           type: boolean
         attributionList:
@@ -1246,6 +1236,8 @@ components:
         networkMembership:
           type: string
         attributions:
+          type: string
+        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1292,6 +1284,14 @@ components:
           type: number
           format: double
         focus:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        uid:
           type: string
         linkedDataResources:
           type: array
@@ -1379,16 +1379,6 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
-        keywords:
-          type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
         attributionList:
           type: array
           items:
@@ -1406,6 +1396,8 @@ components:
         networkMembership:
           type: string
         attributions:
+          type: string
+        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1452,6 +1444,14 @@ components:
           type: number
           format: double
         focus:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        uid:
           type: string
     DataResource:
       type: object
@@ -1576,16 +1576,14 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
-        keywords:
-          type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
+        verified:
+          type: boolean
+        creativeCommons:
+          type: boolean
+        dataProviderId:
+          type: object
+        institutionId:
+          type: object
         attributionList:
           type: array
           items:
@@ -1603,6 +1601,8 @@ components:
         networkMembership:
           type: string
         attributions:
+          type: string
+        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1650,14 +1650,14 @@ components:
           format: double
         focus:
           type: string
-        institutionId:
-          type: object
-        verified:
-          type: boolean
-        creativeCommons:
-          type: boolean
-        dataProviderId:
-          type: object
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        uid:
+          type: string
     TempDataResource:
       type: object
       properties:
@@ -1754,16 +1754,6 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
-        keywords:
-          type: string
-        uid:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
         attributionList:
           type: array
           items:
@@ -1781,6 +1771,8 @@ components:
         networkMembership:
           type: string
         attributions:
+          type: string
+        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1827,6 +1819,14 @@ components:
           type: number
           format: double
         focus:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
+        uid:
           type: string
     Entity:
       type: object
