@@ -9,7 +9,7 @@ info:
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
-  version: 2.2.0
+  version: 3.1.0
 servers:
 - url: https://spatial.biodiversitydata.se/ws
 paths:
@@ -228,7 +228,10 @@ paths:
         description: LSID of the expert distribution
         required: true
         schema:
-          type: string
+          type: object
+          oneOf:
+          - type: integer
+            format: int32
       responses:
         "200":
           description: Overview image of the expert distribution in the Australian
@@ -1817,7 +1820,10 @@ paths:
         description: LSID of the track
         required: true
         schema:
-          type: string
+          type: object
+          oneOf:
+          - type: integer
+            format: int32
       responses:
         "200":
           description: Overview image of the track in the Australian region

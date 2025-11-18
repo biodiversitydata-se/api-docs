@@ -995,22 +995,16 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
-        institutionId:
-          type: object
-        providerMapId:
-          type: object
-        listOfCollectionCodesForLookup:
-          type: array
-          items:
-            type: string
-        listOfInstitutionCodesForLookup:
-          type: array
-          items:
-            type: string
-        inexactlyMapped:
-          type: boolean
-        alapartner:
-          type: boolean
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         collectionAttributionList:
           type: array
           items:
@@ -1036,8 +1030,6 @@ components:
         networkMembership:
           type: string
         attributions:
-          type: string
-        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1085,14 +1077,22 @@ components:
           format: double
         focus:
           type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
-        uid:
-          type: string
+        listOfCollectionCodesForLookup:
+          type: array
+          items:
+            type: string
+        listOfInstitutionCodesForLookup:
+          type: array
+          items:
+            type: string
+        inexactlyMapped:
+          type: boolean
+        alapartner:
+          type: boolean
+        institutionId:
+          type: object
+        providerMapId:
+          type: object
     Contact:
       type: object
       properties:
@@ -1213,8 +1213,16 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
-        alapartner:
-          type: boolean
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         attributionList:
           type: array
           items:
@@ -1236,8 +1244,6 @@ components:
         networkMembership:
           type: string
         attributions:
-          type: string
-        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1285,14 +1291,8 @@ components:
           format: double
         focus:
           type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
-        uid:
-          type: string
+        alapartner:
+          type: boolean
         linkedDataResources:
           type: array
           items:
@@ -1379,6 +1379,16 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         attributionList:
           type: array
           items:
@@ -1396,8 +1406,6 @@ components:
         networkMembership:
           type: string
         attributions:
-          type: string
-        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1444,14 +1452,6 @@ components:
           type: number
           format: double
         focus:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
-        uid:
           type: string
     DataResource:
       type: object
@@ -1576,14 +1576,16 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
-        verified:
-          type: boolean
-        creativeCommons:
-          type: boolean
-        dataProviderId:
-          type: object
-        institutionId:
-          type: object
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         attributionList:
           type: array
           items:
@@ -1601,8 +1603,6 @@ components:
         networkMembership:
           type: string
         attributions:
-          type: string
-        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1650,14 +1650,14 @@ components:
           format: double
         focus:
           type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
-        uid:
-          type: string
+        institutionId:
+          type: object
+        verified:
+          type: boolean
+        creativeCommons:
+          type: boolean
+        dataProviderId:
+          type: object
     TempDataResource:
       type: object
       properties:
@@ -1754,6 +1754,16 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/Address'
+        keywords:
+          type: string
+        uid:
+          type: string
+        dateCreated:
+          type: string
+          format: date-time
+        lastUpdated:
+          type: string
+          format: date-time
         attributionList:
           type: array
           items:
@@ -1771,8 +1781,6 @@ components:
         networkMembership:
           type: string
         attributions:
-          type: string
-        keywords:
           type: string
         publicContactsPrimaryFirst:
           type: array
@@ -1819,14 +1827,6 @@ components:
           type: number
           format: double
         focus:
-          type: string
-        dateCreated:
-          type: string
-          format: date-time
-        lastUpdated:
-          type: string
-          format: date-time
-        uid:
           type: string
     Entity:
       type: object
