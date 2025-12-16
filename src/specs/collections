@@ -1005,6 +1005,18 @@ components:
         lastUpdated:
           type: string
           format: date-time
+        listOfCollectionCodesForLookup:
+          type: array
+          items:
+            type: string
+        listOfInstitutionCodesForLookup:
+          type: array
+          items:
+            type: string
+        inexactlyMapped:
+          type: boolean
+        alapartner:
+          type: boolean
         collectionAttributionList:
           type: array
           items:
@@ -1077,18 +1089,6 @@ components:
           format: double
         focus:
           type: string
-        listOfCollectionCodesForLookup:
-          type: array
-          items:
-            type: string
-        listOfInstitutionCodesForLookup:
-          type: array
-          items:
-            type: string
-        inexactlyMapped:
-          type: boolean
-        alapartner:
-          type: boolean
         institutionId:
           type: object
         providerMapId:
@@ -1223,6 +1223,8 @@ components:
         lastUpdated:
           type: string
           format: date-time
+        alapartner:
+          type: boolean
         attributionList:
           type: array
           items:
@@ -1291,8 +1293,6 @@ components:
           format: double
         focus:
           type: string
-        alapartner:
-          type: boolean
         linkedDataResources:
           type: array
           items:
