@@ -9,7 +9,7 @@ info:
   license:
     name: Mozilla Public License 1.1
     url: https://www.mozilla.org/en-US/MPL/1.1/
-  version: 3.0.1
+  version: 4.1.0
 servers:
 - url: https://images.biodiversitydata.se
 paths:
@@ -268,6 +268,140 @@ paths:
       security:
       - openIdConnect:
         - image-service/write
+  /iiif/{identifier}/info.json:
+    get:
+      tags:
+      - IIIF
+      summary: IIIF Image information (info.json)
+      description: "Returns an IIIF Image API 3.0 ImageService document describing\
+        \ the available image, sizes, tiles and formats for the given identifier."
+      operationId: info
+      parameters:
+      - name: identifier
+        in: path
+        description: IIIF image identifier
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ImageService info
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json: {}
+        "400":
+          description: Missing identifier
+        "404":
+          description: Image not found
+  /iiif/{identifier}/{region}/{size}/{rotation}/{quality}.{format}:
+    get:
+      tags:
+      - IIIF
+      summary: Render IIIF image
+      description: "Renders an image, region and size variant according to the IIIF\
+        \ Image API 3.0. Supports JPEG, PNG and WebP output."
+      operationId: renderImage
+      parameters:
+      - name: identifier
+        in: path
+        description: IIIF image identifier
+        required: true
+        schema:
+          type: string
+      - name: region
+        in: path
+        description: "Region of the image to extract. Use 'full', 'square' or 'x,y,w,h'\
+          \ or 'pct:x,y,w,h' as per IIIF or custom extension 'ar:w,h' for a center\
+          \ cropped maximal region of the given aspect ratio."
+        required: true
+        schema:
+          type: string
+      - name: size
+        in: path
+        description: "Target size. Examples: 'full', 'max', 'w,', ',h', 'w,h', 'pct:n'\
+          \ as per IIIF."
+        required: true
+        schema:
+          type: string
+      - name: rotation
+        in: path
+        description: "Rotation to apply. Examples: '0', '90', '!0' for mirroring as\
+          \ per IIIF."
+        required: true
+        schema:
+          type: string
+      - name: quality
+        in: path
+        description: "Quality to apply. Supported: 'default', 'color', 'gray', 'bitonal'."
+        required: true
+        schema:
+          type: string
+      - name: format
+        in: path
+        description: Output format/extension.
+        required: true
+        schema:
+          type: string
+          enum:
+          - jpg
+          - png
+          - webp
+      responses:
+        "200":
+          description: Rendered image
+          headers:
+            ETag:
+              description: Entity tag for cache validation
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+            Last-Modified:
+              description: Last modified date
+              style: simple
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: string
+          content:
+            image/jpeg: {}
+            image/png: {}
+            image/webp: {}
+        "302":
+          description: Redirect to remote image location when applicable
+        "304":
+          description: Not Modified (cache validation)
+        "400":
+          description: Invalid parameters
+        "404":
+          description: Image or resource not found
   /image/details:
     get:
       tags:
@@ -436,17 +570,24 @@ paths:
               style: simple
               schema:
                 type: String
-  /image/{id}/large:
+  /image/{id}/{type}:
     get:
       tags:
       - "Access to image derivatives (e.g. thumbnails, tiles and originals)"
-      summary: Get image thumbnail large version.
-      description: Get image thumbnail large version.
+      summary: Get an image thumbnail version.
+      description: Get an image thumbnail version.
       operationId: proxyImageThumbnailType
       parameters:
       - name: id
         in: path
         description: Image Id
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: path
+        description: "Thumbnail type (one of: large, xlarge, square, square_black,\
+          \ square_white, square_darkGrey, square_darkGray, centre_crop, centre_crop_large)"
         required: true
         schema:
           type: string
@@ -1212,6 +1353,36 @@ paths:
       security:
       - openIdConnect:
         - image-service/write
+  /ws/exportAvro:
+    get:
+      tags:
+      - Export
+      summary: Export Avro of entire image catalogue
+      description: Export Avro of entire image catalogue
+      operationId: exportAvro
+      responses:
+        "200":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
   /ws/exportCSV:
     get:
       tags:
@@ -1316,7 +1487,81 @@ paths:
             application/json:
               schema:
                 type: string
-  /ws/exportMapping/{id}:
+  /ws/exportDatasetAvro/{id}:
+    get:
+      tags:
+      - Export
+      summary: Export AVRO of URL to imageIdentifier mappings
+      description: |-
+        Exports the following fields in AVRO:
+                        image_identifier as "imageID"
+                        identifier
+                        audience
+                        contributor
+                        created
+                        creator
+                        description
+                        format
+                        license
+                        publisher
+                        references
+                        rightsHolder
+                        source
+                        title
+                        type
+      operationId: exportDatasetAvro
+      parameters:
+      - name: id
+        in: path
+        description: Data Resource UID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: string
+  /ws/exportDatasetMapping/{id}:
     get:
       tags:
       - Export
@@ -1374,6 +1619,64 @@ paths:
             application/json:
               schema:
                 type: string
+  /ws/exportDatasetMappingAvro/{id}:
+    get:
+      tags:
+      - Export
+      summary: Export dataset mappings as AVRO
+      description: Export dataset mappings as AVRO.
+      operationId: exportDatasetMappingAvro
+      parameters:
+      - name: id
+        in: path
+        description: Data Resource UID
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/json:
+              schema:
+                type: string
   /ws/exportMapping:
     get:
       tags:
@@ -1401,6 +1704,36 @@ paths:
                 type: String
           content:
             application/gzip:
+              schema:
+                type: string
+                format: binary
+  /ws/exportMappingAvro:
+    get:
+      tags:
+      - Export
+      summary: Export AVRO of URL to imageIdentifier mappings
+      description: Export AVRO of URL to imageIdentifier mappings.
+      operationId: exportMappingAvro
+      responses:
+        "200":
+          headers:
+            Access-Control-Allow-Origin:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Methods:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+            Access-Control-Allow-Headers:
+              description: CORS header
+              style: simple
+              schema:
+                type: String
+          content:
+            application/octet-stream:
               schema:
                 type: string
                 format: binary

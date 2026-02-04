@@ -997,6 +997,10 @@ components:
           $ref: '#/components/schemas/Address'
         keywords:
           type: string
+        institutionId:
+          type: object
+        providerMapId:
+          type: object
         uid:
           type: string
         dateCreated:
@@ -1089,10 +1093,6 @@ components:
           format: double
         focus:
           type: string
-        institutionId:
-          type: object
-        providerMapId:
-          type: object
     Contact:
       type: object
       properties:
@@ -1578,6 +1578,8 @@ components:
           $ref: '#/components/schemas/Address'
         keywords:
           type: string
+        institutionId:
+          type: object
         uid:
           type: string
         dateCreated:
@@ -1650,8 +1652,6 @@ components:
           format: double
         focus:
           type: string
-        institutionId:
-          type: object
         verified:
           type: boolean
         creativeCommons:
